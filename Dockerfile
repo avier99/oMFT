@@ -27,7 +27,7 @@ RUN npm ci && \
     head -n 10 static/dist/app.css
 
 # Go build stage
-FROM golang:1.24-alpine AS builder
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /app
 
