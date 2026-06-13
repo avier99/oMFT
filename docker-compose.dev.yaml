@@ -1,0 +1,36 @@
+services:
+  omft:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        VERSION: ${VERSION:-dev}
+        BUILD_TIME: ${BUILD_TIME:-unknown}
+        COMMIT: ${COMMIT:-unknown}
+    container_name: omft-dev
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - omft-dev-data:/app/data
+      - omft-dev-backups:/app/backups
+    environment:
+      - TZ=UTC
+      - DATA_DIR=/app/data
+      - BACKUP_DIR=/app/backups
+      - LOGS_DIR=/app/data/logs
+    networks:
+      - omft-dev-network
+    user: ${UID:-1000}:${GID:-1000}
+
+networks:
+  omft-dev-network:
+    driver: bridge
+
+volumes:
+  omft-dev-data:
+    driver: local
+  omft-dev-backups:
+    driver: local
