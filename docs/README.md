@@ -1,6 +1,6 @@
-# GoMFT Documentation
+# oMFT Documentation
 
-This repository contains the documentation for [GoMFT](https://github.com/StarFleetCPTN/GoMFT), a modern, web-based managed file transfer solution written in Go.
+This repository contains the documentation for [oMFT](https://github.com/avier99/oMFT), a modern, web-based managed file transfer solution written in Go.
 
 [![Discord](https://img.shields.io/discord/1351354052654403675?color=7289da&logo=discord&logoColor=white&label=Discord)](https://discord.gg/f9dwtM3j)
 
@@ -27,7 +27,7 @@ The built files will be in the `build` directory.
 
 ## Documentation Structure
 
-- **Introduction**: Overview and features of GoMFT
+- **Introduction**: Overview and features of oMFT
 - **Getting Started**: Installation guides and quick start
 - **Core Concepts**: Detailed information about transfers, connections, and schedules
 - **Advanced Features**: Webhooks, email notifications, and admin tools
@@ -40,7 +40,7 @@ Contributions to the documentation are welcome! Please submit a PR with your cha
 
 ## Community
 
-Join our [Discord community](https://discord.gg/f9dwtM3j) for support, discussions, and updates about GoMFT.
+Join our [Discord community](https://discord.gg/f9dwtM3j) for support, discussions, and updates about oMFT.
 
 ## License
 

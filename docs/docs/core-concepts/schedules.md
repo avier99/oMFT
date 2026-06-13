@@ -5,11 +5,11 @@ title: Schedules
 
 # Schedule Management
 
-GoMFT's scheduling system allows you to automate file transfers to run at specific times or on a recurring basis. This section explains how to create, manage, and monitor scheduled transfers.
+oMFT's scheduling system allows you to automate file transfers to run at specific times or on a recurring basis. This section explains how to create, manage, and monitor scheduled transfers.
 
 ## Schedule Types
 
-GoMFT supports several types of schedules:
+oMFT supports several types of schedules:
 
 ### One-Time Schedules
 
@@ -92,7 +92,7 @@ Examples:
 
 ## Schedule Groups
 
-GoMFT allows you to organize schedules into logical groups:
+oMFT allows you to organize schedules into logical groups:
 
 1. Navigate to **Schedule Groups** in the Schedules section
 2. Create a new group with a name and description
@@ -143,7 +143,7 @@ To delete a schedule:
 
 ## Schedule Execution
 
-When a schedule runs, GoMFT performs these actions:
+When a schedule runs, oMFT performs these actions:
 
 1. Identifies schedules due for execution
 2. Prioritizes schedules based on priority setting
@@ -155,7 +155,7 @@ When a schedule runs, GoMFT performs these actions:
 
 ## Monitoring Schedules
 
-GoMFT provides several ways to monitor your scheduled transfers:
+oMFT provides several ways to monitor your scheduled transfers:
 
 <!-- ### Schedule Calendar
 

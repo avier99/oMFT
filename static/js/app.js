@@ -1,4 +1,4 @@
-// Theme management for GoMFT application
+// Theme management for oMFT application
 document.addEventListener('DOMContentLoaded', function() {
   initializeTheme();
   initializeMobileSupport();

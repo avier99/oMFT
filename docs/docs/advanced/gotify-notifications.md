@@ -5,11 +5,11 @@ title: Gotify Notifications
 
 # Gotify Notifications
 
-Gotify is a simple server for sending and receiving push notifications. GoMFT integrates with Gotify to provide real-time notifications for transfer events and system alerts.
+Gotify is a simple server for sending and receiving push notifications. oMFT integrates with Gotify to provide real-time notifications for transfer events and system alerts.
 
 ## Overview
 
-Gotify integration allows GoMFT to:
+Gotify integration allows oMFT to:
 
 - Send push notifications to your self-hosted Gotify server
 - Customize notification priority based on event importance
@@ -18,11 +18,11 @@ Gotify integration allows GoMFT to:
 
 ## Prerequisites
 
-Before setting up Gotify notifications in GoMFT, you need:
+Before setting up Gotify notifications in oMFT, you need:
 
 1. A running Gotify server (self-hosted)
 2. An application token from your Gotify server
-3. Network connectivity between GoMFT and the Gotify server
+3. Network connectivity between oMFT and the Gotify server
 
 ## Configuration
 
@@ -33,7 +33,7 @@ To configure Gotify notifications:
 1. Navigate to **Settings** > **Notification Services** > **Add New** > **Gotify**
 2. Configure the following settings:
    - **Gotify Server URL**: The URL of your Gotify server (e.g., `https://gotify.example.com`)
-   - **Application Token**: The token for your GoMFT application in Gotify
+   - **Application Token**: The token for your oMFT application in Gotify
    - **Default Priority**: The default priority level for notifications (1-10)
    - **Verify SSL**: Whether to verify SSL certificates (recommended for production)
 
@@ -48,9 +48,9 @@ After configuring your Gotify settings:
 
 ### Priority Levels
 
-Gotify uses numeric priority levels that GoMFT leverages for different event types:
+Gotify uses numeric priority levels that oMFT leverages for different event types:
 
-| Priority | Usage in GoMFT |
+| Priority | Usage in oMFT |
 |----------|----------------|
 | 1-3 | Low priority: successful transfers, routine events |
 | 4-7 | Medium priority: warnings, transfers with issues |
@@ -58,7 +58,7 @@ Gotify uses numeric priority levels that GoMFT leverages for different event typ
 
 ### Example Notifications
 
-GoMFT sends structured notifications with helpful information:
+oMFT sends structured notifications with helpful information:
 
 #### Successful Transfer
 
@@ -90,9 +90,9 @@ Priority: 8
 
 To troubleshoot notification issues:
 
-1. Check the GoMFT logs: **Admin Tools** > **Logs** > filter for "gotify"
+1. Check the oMFT logs: **Admin Tools** > **Logs** > filter for "gotify"
 2. Review the Gotify server logs for any errors
-3. Verify network connectivity between GoMFT and the Gotify server
+3. Verify network connectivity between oMFT and the Gotify server
 
 ## Best Practices
 

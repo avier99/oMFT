@@ -3,9 +3,9 @@ sidebar_position: 1
 title: Installation
 ---
 
-# Installing GoMFT
+# Installing oMFT
 
-GoMFT can be installed using Docker (recommended) or through a traditional installation. This guide covers both methods.
+oMFT can be installed using Docker (recommended) or through a traditional installation. This guide covers both methods.
 
 ## System Requirements
 
@@ -16,17 +16,17 @@ GoMFT can be installed using Docker (recommended) or through a traditional insta
 
 ## Docker Installation (Recommended)
 
-The easiest way to deploy GoMFT is using Docker. This method handles all dependencies and provides an isolated environment.
+The easiest way to deploy oMFT is using Docker. This method handles all dependencies and provides an isolated environment.
 
 ### Using Docker Run
 
 ```bash
 docker run -d \
-  --name gomft \
+  --name omft \
   -p 8080:8080 \
   -v /path/to/data:/app/data \
   -v /path/to/backups:/app/backups \
-  starfleetcptn/gomft:latest
+  ghcr.io/avier99/omft:latest
 ```
 
 Replace `/path/to/data` and `/path/to/backups` with your desired local paths for persistent storage.
@@ -39,9 +39,9 @@ Create a `docker-compose.yaml` file:
 version: '3'
 
 services:
-  gomft:
-    image: starfleetcptn/gomft:latest
-    container_name: gomft
+  omft:
+    image: ghcr.io/avier99/omft:latest
+    container_name: omft
     ports:
       - "8080:8080"
     volumes:
@@ -60,7 +60,7 @@ docker-compose up -d
 
 ### Environment Variables
 
-You can customize your GoMFT installation using environment variables:
+You can customize your oMFT installation using environment variables:
 
 ```yaml
 environment:
@@ -77,7 +77,7 @@ See the [Configuration](/docs/getting-started/configuration) section for a compl
 
 ### File Volume Mounts
 
-When running GoMFT in Docker, you'll need to mount volumes to provide access to the files you want to transfer. Here are common volume mount scenarios:
+When running oMFT in Docker, you'll need to mount volumes to provide access to the files you want to transfer. Here are common volume mount scenarios:
 
 #### For SFTP/FTP Source Files
 ```bash
@@ -97,21 +97,21 @@ When running GoMFT in Docker, you'll need to mount volumes to provide access to 
 Example using Docker Run with file volumes:
 ```bash
 docker run -d \
-  --name gomft \
+  --name omft \
   -p 8080:8080 \
   -v /path/to/data:/app/data \
   -v /path/to/backups:/app/backups \
   -v /path/to/local/files:/sftp/files \
   -v /path/to/destination:/mft/destination \
-  starfleetcptn/gomft:latest
+  ghcr.io/avier99/omft:latest
 ```
 
 Example Docker Compose configuration with file volumes:
 ```yaml
 services:
-  gomft:
-    image: starfleetcptn/gomft:latest
-    container_name: gomft
+  omft:
+    image: ghcr.io/avier99/omft:latest
+    container_name: omft
     ports:
       - "8080:8080"
     volumes:
@@ -129,7 +129,7 @@ services:
 
 ## Traditional Installation
 
-For environments where Docker is not available or preferred, you can install GoMFT directly.
+For environments where Docker is not available or preferred, you can install oMFT directly.
 
 ### Prerequisites
 
@@ -142,8 +142,8 @@ For environments where Docker is not available or preferred, you can install GoM
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/StarFleetCPTN/GoMFT.git
-cd GoMFT
+git clone https://github.com/avier99/oMFT.git
+cd oMFT
 ```
 
 2. Install Node.js dependencies:
@@ -161,18 +161,18 @@ npm run build
 4. Build the Go application:
 
 ```bash
-go build -o gomft
+go build -o omft
 ```
 
 5. Run the application:
 
 ```bash
-./gomft
+./omft
 ```
 
 ## Verifying the Installation
 
-After installation, access the GoMFT web interface by navigating to:
+After installation, access the oMFT web interface by navigating to:
 
 ```
 http://localhost:8080
@@ -187,4 +187,4 @@ The default login credentials are:
 
 ## Next Steps
 
-Once GoMFT is installed, proceed to the [Quick Start](/docs/getting-started/quick-start) guide to begin configuring your file transfers. 
+Once oMFT is installed, proceed to the [Quick Start](/docs/getting-started/quick-start) guide to begin configuring your file transfers. 

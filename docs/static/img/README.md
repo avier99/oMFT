@@ -14,11 +14,11 @@ The automated copy is handled by the `prepare-screenshots` script in package.jso
 
 The following images are used in the documentation:
 
-- `logo.svg` - The GoMFT logo for the header
+- `logo.svg` - The oMFT logo for the header
 - `favicon.ico` - The website favicon
 - `docusaurus-social-card.jpg` - Social media preview image
-- `dashboard.gomft.png` - Screenshot of the GoMFT dashboard
-- `dashboard.dark.gomft.png` - Screenshot of the GoMFT dashboard in dark mode
+- `dashboard.gomft.png` - Screenshot of the oMFT dashboard
+- `dashboard.dark.gomft.png` - Screenshot of the oMFT dashboard in dark mode
 - `transfer.config.gomft.png` - Screenshot of the transfer configuration
 - `scheduled.jobs.gomft.png` - Screenshot of the scheduled jobs
 - `transfer.history.gomft.png` - Screenshot of the transfer history

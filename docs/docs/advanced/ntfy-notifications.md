@@ -5,11 +5,11 @@ title: Ntfy Notifications
 
 # Ntfy Notifications
 
-Ntfy is a simple HTTP-based pub-sub notification service that allows you to send push notifications to your phone or desktop. GoMFT seamlessly integrates with Ntfy to deliver notifications about your file transfers and system events.
+Ntfy is a simple HTTP-based pub-sub notification service that allows you to send push notifications to your phone or desktop. oMFT seamlessly integrates with Ntfy to deliver notifications about your file transfers and system events.
 
 ## Overview
 
-Ntfy integration in GoMFT enables:
+Ntfy integration in oMFT enables:
 
 - Push notifications to mobile devices and desktops
 - Choice between public ntfy.sh service or self-hosted Ntfy server
@@ -18,7 +18,7 @@ Ntfy integration in GoMFT enables:
 
 ## Prerequisites
 
-Before configuring Ntfy notifications in GoMFT, you should:
+Before configuring Ntfy notifications in oMFT, you should:
 
 1. Install the Ntfy app on your devices (available for Android, iOS, and desktop)
 2. Subscribe to your chosen topic in the Ntfy app
@@ -28,7 +28,7 @@ Before configuring Ntfy notifications in GoMFT, you should:
 
 ### Global Ntfy Settings
 
-To configure Ntfy notifications in GoMFT:
+To configure Ntfy notifications in oMFT:
 
 1. Navigate to **Settings** > **Notification Services** > **Add New** > **Ntfy**
 2. Configure the following settings:
@@ -48,9 +48,9 @@ After configuring your Ntfy settings:
 
 ### Priority Levels
 
-Ntfy supports five priority levels that GoMFT uses effectively:
+Ntfy supports five priority levels that oMFT uses effectively:
 
-| Priority | Level | Usage in GoMFT |
+| Priority | Level | Usage in oMFT |
 |----------|-------|----------------|
 | 1 | Min | Background information, debug notifications |
 | 2 | Low | Successful transfers, routine events |
@@ -60,7 +60,7 @@ Ntfy supports five priority levels that GoMFT uses effectively:
 
 ### Notification Tags
 
-GoMFT uses meaningful tags in Ntfy notifications to provide visual cues:
+oMFT uses meaningful tags in Ntfy notifications to provide visual cues:
 
 | Tag | Usage |
 |-----|-------|
@@ -73,7 +73,7 @@ GoMFT uses meaningful tags in Ntfy notifications to provide visual cues:
 
 ### Example Notifications
 
-GoMFT sends structured notifications with helpful information:
+oMFT sends structured notifications with helpful information:
 
 #### Successful Transfer
 
@@ -93,7 +93,7 @@ Files processed: 45/123
 Size transferred: 0.5/1.45 GB
 Priority: 4 (High)
 Tags: ❌,📁
-Click action: Open GoMFT
+Click action: Open oMFT
 ```
 
 ## Advanced Features
@@ -114,7 +114,7 @@ Tags: {% if status == "success" %}✅{% else %}❌{% endif %},📁
 For enhanced privacy and control, you can self-host your own Ntfy server:
 
 1. Follow the [Ntfy self-hosting guide](https://docs.ntfy.sh/install/)
-2. Update your GoMFT configuration to point to your self-hosted server
+2. Update your oMFT configuration to point to your self-hosted server
 3. Configure authentication as needed
 
 Example configuration for self-hosted Ntfy:
@@ -122,7 +122,7 @@ Example configuration for self-hosted Ntfy:
 ```yaml
 ntfy:
   server_url: https://ntfy.example.com
-  default_topic: gomft
+  default_topic: omft
   authentication:
     type: basic
     username: ${NTFY_USERNAME}
@@ -135,14 +135,14 @@ ntfy:
 
 - **Notifications Not Arriving**: Verify you've subscribed to the correct topic
 - **Authentication Errors**: Check credentials and authentication method
-- **Connection Issues**: Ensure the Ntfy server is accessible from GoMFT
+- **Connection Issues**: Ensure the Ntfy server is accessible from oMFT
 - **App Configuration**: Verify notification settings in your Ntfy app
 
 ### Ntfy Logs
 
 To troubleshoot notification issues:
 
-1. Check the GoMFT logs: **Administration** > **Log Viewer** > filter for "ntfy"
+1. Check the oMFT logs: **Administration** > **Log Viewer** > filter for "ntfy"
 2. If self-hosting, check your Ntfy server logs
 3. Verify your device has properly functioning notifications
 

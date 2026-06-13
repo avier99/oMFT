@@ -3,15 +3,15 @@ sidebar_position: 2
 title: Features
 ---
 
-# GoMFT Features
+# oMFT Features
 
-GoMFT offers a comprehensive set of features that make it a powerful solution for managed file transfers. Here's a detailed breakdown of what GoMFT offers:
+oMFT offers a comprehensive set of features that make it a powerful solution for managed file transfers. Here's a detailed breakdown of what oMFT offers:
 
 ## Core Features
 
 ### Multi-Protocol Support
 
-GoMFT leverages rclone to support a wide range of storage providers and protocols:
+oMFT leverages rclone to support a wide range of storage providers and protocols:
 
 - **Cloud Storage**: Amazon S3, Google Cloud Storage
 - **Object Storage**: MinIO, Backblaze B2, Wasabi

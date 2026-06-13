@@ -31,7 +31,7 @@ function HomepageHeader() {
               </Link>
               <Link
                 className="button button--outline button--lg button--secondary"
-                to="https://github.com/StarFleetCPTN/GoMFT">
+                to="https://github.com/avier99/oMFT">
                 GitHub
               </Link>
             </div>
@@ -48,7 +48,7 @@ function FeatureList() {
       title: 'Easy to Use',
       description: (
         <>
-          GoMFT was designed from the ground up to be easily installed and
+          oMFT was designed from the ground up to be easily installed and
           used to get your file transfers up and running quickly.
         </>
       ),
@@ -57,7 +57,7 @@ function FeatureList() {
       title: 'Multi-Protocol Support',
       description: (
         <>
-          GoMFT leverages the power of rclone to support over 40 storage
+          oMFT leverages the power of rclone to support over 40 storage
           systems including S3, SFTP, Google Drive, and more.
         </>
       ),
@@ -95,7 +95,7 @@ export default function Home(): React.ReactNode {
   return (
     <Layout
       title={`${siteConfig.title} - Modern Managed File Transfer Solution`}
-      description="GoMFT is a modern, open-source managed file transfer solution with multi-protocol support, scheduling capabilities, and a user-friendly web interface">
+      description="oMFT is a modern, open-source managed file transfer solution with multi-protocol support, scheduling capabilities, and a user-friendly web interface">
       <HomepageHeader />
       <main>
         <section className={styles.features}>
@@ -114,7 +114,7 @@ export default function Home(): React.ReactNode {
               <div className="col col--6">
                 <Heading as="h2">Modern Web Interface</Heading>
                 <p>
-                  GoMFT provides a clean, responsive web interface for managing your file transfers.
+                  oMFT provides a clean, responsive web interface for managing your file transfers.
                   The dashboard gives you at-a-glance information about transfer status, recent jobs,
                   and system health.
                 </p>
@@ -125,7 +125,7 @@ export default function Home(): React.ReactNode {
                 </Link>
               </div>
               <div className="col col--6">
-                <img src="img/dashboard.gomft.png" alt="GoMFT Dashboard" className="shadow--md" style={{borderRadius: '8px'}} />
+                <img src="img/dashboard.gomft.png" alt="oMFT Dashboard" className="shadow--md" style={{borderRadius: '8px'}} />
               </div>
             </div>
           </div>
@@ -140,7 +140,7 @@ export default function Home(): React.ReactNode {
               <div className="col col--6">
                 <Heading as="h2">Easy Deployment</Heading>
                 <p>
-                  Deploy GoMFT quickly using Docker, or install it directly on your system.
+                  Deploy oMFT quickly using Docker, or install it directly on your system.
                   The application is lightweight and can run on various platforms including
                   Linux, macOS, and Windows.
                 </p>
@@ -159,7 +159,7 @@ export default function Home(): React.ReactNode {
             <div className="text--center">
               <Heading as="h2">Ready to Get Started?</Heading>
               <p>
-                Check out our documentation to learn how to set up and use GoMFT for your file transfer needs.
+                Check out our documentation to learn how to set up and use oMFT for your file transfer needs.
               </p>
               <div className={styles.buttons}>
                 <Link
@@ -169,7 +169,7 @@ export default function Home(): React.ReactNode {
                 </Link>
                 <Link
                   className="button button--secondary button--lg"
-                  to="https://github.com/StarFleetCPTN/GoMFT">
+                  to="https://github.com/avier99/oMFT">
                   GitHub Repository
                 </Link>
               </div>

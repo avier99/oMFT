@@ -5,20 +5,20 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'GoMFT',
+  title: 'oMFT',
   tagline: 'A modern, web-based managed file transfer solution',
   favicon: 'favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://starfleetcptn.github.io',
+  url: 'https://avier99.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/GoMFT/',
+  baseUrl: '/oMFT/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'StarFleetCPTN', // Usually your GitHub org/user name.
-  projectName: 'GoMFT', // Usually your repo name.
+  organizationName: 'avier99', // Usually your GitHub org/user name.
+  projectName: 'oMFT', // Usually your repo name.
   deploymentBranch: 'gh-pages',
   trailingSlash: false,
 
@@ -49,13 +49,13 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           editUrl:
-            'https://github.com/StarFleetCPTN/GoMFT/tree/main/docs',
+            'https://github.com/avier99/oMFT/tree/main/docs',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/StarFleetCPTN/GoMFT/tree/main/docs',
+            'https://github.com/avier99/oMFT/tree/main/docs',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -84,9 +84,9 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/gomft-social-card.jpg',
     navbar: {
-      title: 'GoMFT',
+      title: 'oMFT',
       logo: {
-        alt: 'GoMFT Logo',
+        alt: 'oMFT Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -99,7 +99,7 @@ const config: Config = {
         {to: '/docs/introduction/overview', label: 'Getting Started', position: 'left'},
         {to: '/docs/development/contributing', label: 'Contributing', position: 'left'},
         {
-          href: 'https://github.com/StarFleetCPTN/GoMFT',
+          href: 'https://github.com/avier99/oMFT',
           label: 'GitHub',
           position: 'right',
         },
@@ -140,11 +140,11 @@ const config: Config = {
             },
             {
               label: 'GitHub Discussions',
-              href: 'https://github.com/StarFleetCPTN/GoMFT/discussions',
+              href: 'https://github.com/avier99/oMFT/discussions',
             },
             {
               label: 'Issues',
-              href: 'https://github.com/StarFleetCPTN/GoMFT/issues',
+              href: 'https://github.com/avier99/oMFT/issues',
             },
           ],
         },
@@ -153,12 +153,12 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/StarFleetCPTN/GoMFT',
+              href: 'https://github.com/avier99/oMFT',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} GoMFT. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} oMFT. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

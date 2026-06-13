@@ -3,13 +3,13 @@ sidebar_position: 2
 title: Quick Start
 ---
 
-# GoMFT Quick Start Guide
+# oMFT Quick Start Guide
 
-This guide will help you get up and running with GoMFT quickly. We'll cover logging in, creating your first connection configuration, and setting up a file transfer.
+This guide will help you get up and running with oMFT quickly. We'll cover logging in, creating your first connection configuration, and setting up a file transfer.
 
 ## Accessing the Web Interface
 
-After installation, access the GoMFT web interface at `http://your-server:8080` (or the appropriate port if you've modified it).
+After installation, access the oMFT web interface at `http://your-server:8080` (or the appropriate port if you've modified it).
 
 1. Log in with the default credentials:
    - **Username**: admin@example.com
@@ -23,7 +23,7 @@ The dashboard provides an overview of:
 - System status
 - Quick action buttons
 
-![GoMFT Dashboard](../../static/img/dashboard.gomft.png)
+![oMFT Dashboard](../../static/img/dashboard.gomft.png)
 
 ## Creating Your First Transfer Configuration
 

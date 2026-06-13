@@ -5,11 +5,11 @@ title: Webhook Notifications
 
 # Webhook Notifications
 
-Webhook notifications in GoMFT provide a powerful way to integrate with external systems by sending HTTP requests when events occur. This enables automation workflows and integration with your existing tools and services.
+Webhook notifications in oMFT provide a powerful way to integrate with external systems by sending HTTP requests when events occur. This enables automation workflows and integration with your existing tools and services.
 
 ## Overview
 
-Webhooks allow GoMFT to:
+Webhooks allow oMFT to:
 
 - Send real-time notifications to external systems
 - Trigger automated workflows in third-party applications
@@ -42,7 +42,7 @@ After configuring your webhook settings:
 
 ### Default JSON Payload
 
-By default, GoMFT sends a JSON payload with information about the event:
+By default, oMFT sends a JSON payload with information about the event:
 
 ```json
 {
@@ -106,7 +106,7 @@ Example custom template:
 {
   "alert": {
     "type": "{{event_type}}",
-    "system": "GoMFT",
+    "system": "oMFT",
     "environment": "{{environment}}",
     "details": {
       "transfer_name": "{{transfer_name}}",
@@ -131,7 +131,7 @@ Example custom template:
 
 ### Webhook Logs
 
-GoMFT logs all webhook attempts:
+oMFT logs all webhook attempts:
 
 1. Navigate to **Administartion** > **Log Viewer**
 2. Filter for "webhook" to see relevant log entries

@@ -3,9 +3,9 @@ sidebar_position: 2
 title: Contributing
 ---
 
-# Contributing to GoMFT
+# Contributing to oMFT
 
-Thank you for your interest in contributing to GoMFT! This guide will help you get started with contributing to the project.
+Thank you for your interest in contributing to oMFT! This guide will help you get started with contributing to the project.
 
 ## Code of Conduct
 
@@ -29,14 +29,14 @@ Before you begin, ensure you have the following installed:
 2. Clone your forked repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/GoMFT.git
-cd GoMFT
+git clone https://github.com/YOUR_USERNAME/oMFT.git
+cd oMFT
 ```
 
 3. Add the original repository as an upstream remote:
 
 ```bash
-git remote add upstream https://github.com/StarFleetCPTN/GoMFT.git
+git remote add upstream https://github.com/avier99/oMFT.git
 ```
 
 4. Install Go dependencies:
@@ -194,7 +194,7 @@ Before submitting your PR, please ensure:
 
 ### Working with Templ
 
-[Templ](https://github.com/a-h/templ) is used for HTML templating in GoMFT. After making changes to `.templ` files, you need to regenerate the Go code:
+[Templ](https://github.com/a-h/templ) is used for HTML templating in oMFT. After making changes to `.templ` files, you need to regenerate the Go code:
 
 ```bash
 templ generate
@@ -206,7 +206,7 @@ templ generate
 
 ### Working with SQLite
 
-GoMFT uses SQLite for data storage. The database file is located at `data/gomft.db` by default. You can use a tool like [SQLite Browser](https://sqlitebrowser.org/) to inspect the database.
+oMFT uses SQLite for data storage. The database file is located at `data/gomft.db` by default. You can use a tool like [SQLite Browser](https://sqlitebrowser.org/) to inspect the database.
 
 ### Debugging
 
@@ -247,7 +247,7 @@ swag init -g cmd/api/main.go
 
 ## Release Process
 
-GoMFT follows [Semantic Versioning](https://semver.org/).
+oMFT follows [Semantic Versioning](https://semver.org/).
 
 ### Creating a Release
 
@@ -269,10 +269,10 @@ git push origin v1.2.3
 
 ## Getting Help
 
-If you need help with contributing to GoMFT, you can:
+If you need help with contributing to oMFT, you can:
 
 - Open an issue on GitHub with questions
 - Discuss in the GitHub Discussions section
 - Reach out to the maintainers
 
-Thank you for contributing to GoMFT! 
+Thank you for contributing to oMFT! 

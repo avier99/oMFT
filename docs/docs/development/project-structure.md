@@ -5,15 +5,15 @@ title: Project Structure
 
 # Project Structure
 
-This page explains the structure of the GoMFT codebase to help developers understand how the application is organized.
+This page explains the structure of the oMFT codebase to help developers understand how the application is organized.
 
 ## Overview
 
-GoMFT is built using a combination of Go for the backend and web technologies for the frontend. The application follows a modular architecture to maintain separation of concerns and facilitate testing and maintenance.
+oMFT is built using a combination of Go for the backend and web technologies for the frontend. The application follows a modular architecture to maintain separation of concerns and facilitate testing and maintenance.
 
 ## Directory Structure
 
-Here's the high-level directory structure of the GoMFT project:
+Here's the high-level directory structure of the oMFT project:
 
 ```
 .
@@ -36,7 +36,7 @@ Here's the high-level directory structure of the GoMFT project:
 
 ### Backend (Go)
 
-GoMFT's backend is written in Go and structured around several key packages:
+oMFT's backend is written in Go and structured around several key packages:
 
 #### `main.go`
 
@@ -117,7 +117,7 @@ Contains static assets for the web interface:
 
 ## Build System
 
-GoMFT uses several tools to build and bundle the application:
+oMFT uses several tools to build and bundle the application:
 
 - **Go Build**: Compiles the Go code
 - **Templ**: Compiles templ templates to Go code
@@ -138,7 +138,7 @@ The build process is orchestrated by a combination of Go commands and npm script
 
 ## Database Structure
 
-GoMFT uses GORM (Go Object Relational Mapper) with SQLite as the default database. The main database models include:
+oMFT uses GORM (Go Object Relational Mapper) with SQLite as the default database. The main database models include:
 
 - **`User`**: User account information
 - **`Role`**: User roles for RBAC
@@ -175,7 +175,7 @@ The web interface is organized around these main routes:
 
 ## Authentication Flow
 
-The authentication flow in GoMFT works like this:
+The authentication flow in oMFT works like this:
 
 1. User submits credentials via the login form or API
 2. Credentials are validated against the configured authentication provider(s)
@@ -197,7 +197,7 @@ The transfer execution flow is as follows:
 
 ## Testing Structure
 
-GoMFT includes several types of tests:
+oMFT includes several types of tests:
 
 - **Unit Tests**: Test individual functions and methods
 - **Integration Tests**: Test interactions between components

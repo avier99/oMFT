@@ -3,13 +3,13 @@ sidebar_position: 1
 title: Overview
 ---
 
-# GoMFT Overview
+# oMFT Overview
 
-GoMFT is a modern, web-based managed file transfer solution written in Go. It provides an intuitive interface for setting up, scheduling, and monitoring file transfers across various storage backends.
+oMFT is a modern, web-based managed file transfer solution written in Go. It provides an intuitive interface for setting up, scheduling, and monitoring file transfers across various storage backends.
 
-## What is GoMFT?
+## What is oMFT?
 
-GoMFT (Go Managed File Transfer) is an open-source file transfer platform that enables reliable, secure, and automated file transfers. Built on top of the powerful [rclone](https://rclone.org/) engine, GoMFT provides a user-friendly web interface that makes it easy to configure and manage complex file transfer operations.
+oMFT (Go Managed File Transfer) is an open-source file transfer platform that enables reliable, secure, and automated file transfers. Built on top of the powerful [rclone](https://rclone.org/) engine, oMFT provides a user-friendly web interface that makes it easy to configure and manage complex file transfer operations.
 
 ## Key Benefits
 
@@ -30,10 +30,10 @@ GoMFT (Go Managed File Transfer) is an open-source file transfer platform that e
 - **Workflow Automation**: Trigger file transfers as part of larger workflows
 - **Compliance**: Maintain audit logs for regulatory compliance
 
-GoMFT is designed to be simple to deploy and use, while providing the reliability and features needed for enterprise file transfer needs. 
+oMFT is designed to be simple to deploy and use, while providing the reliability and features needed for enterprise file transfer needs. 
 
 ## Community Support
 
-Join our Discord community for support, discussions, and updates about GoMFT:
+Join our Discord community for support, discussions, and updates about oMFT:
 
 <a href="https://discord.gg/f9dwtM3j" className="discord-badge">Join Discord Community</a> 

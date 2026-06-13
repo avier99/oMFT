@@ -5,7 +5,7 @@ title: Admin Tools
 
 # Admin Tools
 
-GoMFT provides a comprehensive set of administrative tools for system management, monitoring, and maintenance. These tools help administrators maintain the system, troubleshoot issues, and ensure optimal performance.
+oMFT provides a comprehensive set of administrative tools for system management, monitoring, and maintenance. These tools help administrators maintain the system, troubleshoot issues, and ensure optimal performance.
 
 ## Accessing Admin Tools
 
@@ -51,7 +51,7 @@ The Admin Tools interface also includes database management capabilities:
 
 ### Backup Management
 
-- **Create Backup**: Generate a backup of the GoMFT database
+- **Create Backup**: Generate a backup of the oMFT database
 - **Schedule Backups**: Configure automatic backup schedules
 - **View Backups**: List all available backups with their dates and sizes
 - **Download Backup**: Download a backup file for safekeeping
@@ -66,11 +66,11 @@ The Admin Tools interface also includes database management capabilities:
 
 ## System Information
 
-The System Information panel provides a comprehensive overview of your GoMFT installation:
+The System Information panel provides a comprehensive overview of your oMFT installation:
 
 ### System Stats
 
-- **Version Information**: Current GoMFT version and build details
+- **Version Information**: Current oMFT version and build details
 - **System Resources**: CPU, memory, and disk usage
 - **Uptime**: System uptime and start time
 - **Active Transfers**: Currently running transfers
@@ -154,12 +154,12 @@ The system provides facilities for importing and exporting configuration:
 
 - **Export Configurations**: Export transfer configurations as JSON
 - **Import Configurations**: Import configurations from JSON files
-- **Migrate Settings**: Move settings between GoMFT instances
+- **Migrate Settings**: Move settings between oMFT instances
 - **Bulk Operations**: Perform operations on multiple items
 
 ## Audit Logs
 
-For security and compliance, GoMFT maintains comprehensive audit logs:
+For security and compliance, oMFT maintains comprehensive audit logs:
 
 ### Audit Log Features
 

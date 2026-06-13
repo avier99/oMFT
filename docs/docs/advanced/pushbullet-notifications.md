@@ -5,11 +5,11 @@ title: Pushbullet Notifications
 
 # Pushbullet Notifications
 
-Pushbullet is a cross-platform notification service that allows you to receive notifications on multiple devices. GoMFT integrates with Pushbullet to deliver timely notifications about your file transfers and system events.
+Pushbullet is a cross-platform notification service that allows you to receive notifications on multiple devices. oMFT integrates with Pushbullet to deliver timely notifications about your file transfers and system events.
 
 ## Overview
 
-Pushbullet integration in GoMFT offers:
+Pushbullet integration in oMFT offers:
 
 - Cross-platform notifications across your devices (Android, iOS, Chrome, Firefox, etc.)
 - Option to send to all devices or specific devices
@@ -18,7 +18,7 @@ Pushbullet integration in GoMFT offers:
 
 ## Prerequisites
 
-Before configuring Pushbullet notifications in GoMFT, you need:
+Before configuring Pushbullet notifications in oMFT, you need:
 
 1. A Pushbullet account
 2. Pushbullet API access token
@@ -41,7 +41,7 @@ To configure Pushbullet notifications:
 1. Log in to your Pushbullet account at [pushbullet.com](https://www.pushbullet.com/)
 2. Go to **Settings** > **Account**
 3. In the **Access Tokens** section, click **Create Access Token**
-4. Copy the generated token and paste it into GoMFT
+4. Copy the generated token and paste it into oMFT
 
 ### Testing Pushbullet Connection
 
@@ -53,7 +53,7 @@ After configuring your Pushbullet settings:
 
 ### Notification Types
 
-GoMFT supports two types of Pushbullet notifications:
+oMFT supports two types of Pushbullet notifications:
 
 #### Note Type
 
@@ -66,7 +66,7 @@ Body: Successfully transferred 123 files (1.45 GB) in 2:15
 
 #### Link Type
 
-Notifications that include a link to the GoMFT interface:
+Notifications that include a link to the oMFT interface:
 
 ```
 Title: Transfer Failed: Daily Backup
@@ -111,19 +111,19 @@ URL: https://gomft.example.com/transfers/123
 
 To troubleshoot notification issues:
 
-1. Check the GoMFT logs: **Administration** > **Log Viewer** > filter for "pushbullet"
+1. Check the oMFT logs: **Administration** > **Log Viewer** > filter for "pushbullet"
 2. Review the Pushbullet account activity in your Pushbullet account
 
 ## Best Practices
 
 - **Secure Your API Token**: Treat your Pushbullet API token as sensitive information
 - **Group Related Notifications** to avoid notification fatigue
-- **Include Action Links** for quick access to relevant GoMFT pages
+- **Include Action Links** for quick access to relevant oMFT pages
 - **Set Up Multiple Notification Methods** for critical systems
 
 ## Pushbullet Alternatives
 
-If you encounter limitations with Pushbullet, GoMFT also supports:
+If you encounter limitations with Pushbullet, oMFT also supports:
 
 - [Email Notifications](./email-notifications)
 - [Gotify](./gotify-notifications) 

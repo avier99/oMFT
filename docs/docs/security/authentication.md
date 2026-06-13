@@ -5,15 +5,15 @@ title: Authentication
 
 # Authentication and Authorization
 
-GoMFT provides robust authentication and authorization mechanisms to ensure secure access to the application and its features. This page explains how to configure and manage authentication in GoMFT.
+oMFT provides robust authentication and authorization mechanisms to ensure secure access to the application and its features. This page explains how to configure and manage authentication in oMFT.
 
 ## Authentication Methods
 
-GoMFT supports multiple authentication methods to secure access to the application:
+oMFT supports multiple authentication methods to secure access to the application:
 
 ### Local Authentication
 
-The default authentication method using GoMFT's built-in user database:
+The default authentication method using oMFT's built-in user database:
 
 - **Username/Password**: Traditional username and password authentication
 - **Password Requirements**: Configurable password complexity rules
@@ -27,7 +27,7 @@ Support for modern identity providers:
 - **Single Sign-On**: Integrate with SSO solutions
 - **Identity Providers**: Support for popular providers (Google, Microsoft, Okta, etc.)
 - **JWT Tokens**: Secure token-based authentication
-- **Automatic Account Provisioning (COMING SOON)**: Create GoMFT accounts based on SSO information
+- **Automatic Account Provisioning (COMING SOON)**: Create oMFT accounts based on SSO information
 
 ## Setting Up Authentication
 
@@ -48,13 +48,13 @@ To set up OAuth or OpenID Connect:
    - Scope (e.g., `openid profile email`)
    - Callback URL
 4. Set up attribute mappings:
-   - Map provider attributes to GoMFT user properties
+   - Map provider attributes to oMFT user properties
    - Configure role attribute or claim
 5. Test the configuration
 
 ## Multi-Factor Authentication (MFA)
 
-GoMFT supports multi-factor authentication for enhanced security:
+oMFT supports multi-factor authentication for enhanced security:
 
 ### MFA Options
 
@@ -66,7 +66,7 @@ GoMFT supports multi-factor authentication for enhanced security:
 
 For users to set up MFA:
 
-1. Log in to GoMFT
+1. Log in to oMFT
 2. Navigate to **Profile** > **Security Settings**
 3. Select **Enable Multi-Factor Authentication**
 4. Choose the MFA method (e.g., TOTP)
@@ -107,7 +107,7 @@ To manage existing users:
 
 ### User Self-Service
 
-GoMFT provides self-service features for users:
+oMFT provides self-service features for users:
 
 - **Profile Management**: Users can update their profile information
 - **Password Change**: Users can change their password
@@ -115,7 +115,7 @@ GoMFT provides self-service features for users:
 
 ## Role-Based Access Control
 
-GoMFT implements role-based access control (RBAC) to manage permissions:
+oMFT implements role-based access control (RBAC) to manage permissions:
 
 ### Default Roles
 
@@ -137,7 +137,7 @@ To create a custom role:
 
 ### Permission Categories
 
-GoMFT organizes permissions into categories:
+oMFT organizes permissions into categories:
 
 - **System Administration**: System-wide settings and maintenance
 - **User Management**: User and role administration

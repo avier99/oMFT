@@ -5,11 +5,11 @@ title: Release Process
 
 # Release Process
 
-This document outlines the process for creating and publishing new releases of GoMFT.
+This document outlines the process for creating and publishing new releases of oMFT.
 
 ## Version Numbering
 
-GoMFT follows [Semantic Versioning](https://semver.org/) (SemVer) for version numbering:
+oMFT follows [Semantic Versioning](https://semver.org/) (SemVer) for version numbering:
 
 - **Major version** (X.0.0): Incompatible API changes or significant architectural changes
 - **Minor version** (0.X.0): New features added in a backward-compatible manner
@@ -17,7 +17,7 @@ GoMFT follows [Semantic Versioning](https://semver.org/) (SemVer) for version nu
 
 ## Release Cycle
 
-GoMFT follows a time-based release cycle:
+oMFT follows a time-based release cycle:
 
 - **Major releases**: Approximately once per year
 - **Minor releases**: Every 2-3 months
@@ -134,8 +134,8 @@ git push origin vX.Y.Z
 The CI/CD pipeline automatically builds the following artifacts upon tagging:
 
 1. **Docker Images**:
-   - `gomft/gomft:vX.Y.Z` - Specific version
-   - `gomft/gomft:latest` - Updated for stable releases only
+   - `avier99/omft:vX.Y.Z` - Specific version
+   - `avier99/omft:latest` - Updated for stable releases only
 
 2. **Binary Distributions**:
    - Linux (amd64, arm64)
@@ -154,7 +154,7 @@ Create a new release on GitHub:
 1. Navigate to the repository's "Releases" page
 2. Click "Draft a new release"
 3. Select the tag you just pushed
-4. Title the release "GoMFT vX.Y.Z"
+4. Title the release "oMFT vX.Y.Z"
 5. Copy the changelog entry for this version
 6. Attach the built artifacts
 7. Publish the release

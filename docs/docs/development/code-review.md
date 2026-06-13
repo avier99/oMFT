@@ -5,7 +5,7 @@ title: Code Review Guidelines
 
 # Code Review Guidelines
 
-This document outlines the code review process and expectations for the GoMFT project.
+This document outlines the code review process and expectations for the oMFT project.
 
 ## Purpose of Code Reviews
 

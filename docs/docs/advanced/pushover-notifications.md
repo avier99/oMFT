@@ -5,11 +5,11 @@ title: Pushover Notifications
 
 # Pushover Notifications
 
-Pushover is a simple notification service that makes it easy to send real-time notifications to your Android and iOS devices, as well as desktop computers. GoMFT integrates with Pushover to deliver instant notifications about your file transfers and system events.
+Pushover is a simple notification service that makes it easy to send real-time notifications to your Android and iOS devices, as well as desktop computers. oMFT integrates with Pushover to deliver instant notifications about your file transfers and system events.
 
 ## Overview
 
-Pushover integration in GoMFT provides:
+Pushover integration in oMFT provides:
 
 - Real-time push notifications to mobile devices and desktops
 - Prioritized notifications with different sounds and attention levels
@@ -18,7 +18,7 @@ Pushover integration in GoMFT provides:
 
 ## Prerequisites
 
-Before configuring Pushover notifications in GoMFT, you need:
+Before configuring Pushover notifications in oMFT, you need:
 
 1. A [Pushover account](https://pushover.net/)
 2. Your Pushover user key
@@ -27,26 +27,26 @@ Before configuring Pushover notifications in GoMFT, you need:
 
 ## Configuration
 
-### Registering a GoMFT Application in Pushover
+### Registering a oMFT Application in Pushover
 
 1. Log in to your Pushover account at [pushover.net](https://pushover.net/)
 2. Go to [Your Applications](https://pushover.net/apps/build)
 3. Create a new application:
-   - **Name**: GoMFT
+   - **Name**: oMFT
    - **Type**: Application
-   - **Description**: GoMFT File Transfer Notifications
-   - **URL**: Your GoMFT instance URL (optional)
+   - **Description**: oMFT File Transfer Notifications
+   - **URL**: Your oMFT instance URL (optional)
    - **Icon**: Upload a custom icon (optional)
 4. After creation, you'll receive an **API Token/Key** for your application
 
 ### Global Pushover Settings
 
-To configure Pushover notifications in GoMFT:
+To configure Pushover notifications in oMFT:
 
 1. Navigate to **Settings** > **Notification Services** > **Add New** > **Pushover**
 2. Configure the following settings:
    - **User Key**: Your Pushover user key
-   - **API Token**: Your GoMFT application's API token
+   - **API Token**: Your oMFT application's API token
    - **Default Priority**: Default priority level (-2 to 2)
    - **Default Sound**: Sound for notifications
    - **Default Device**: Specific device or blank for all devices
@@ -61,9 +61,9 @@ After configuring your Pushover settings:
 
 ### Priority Levels
 
-Pushover supports different priority levels that GoMFT uses effectively:
+Pushover supports different priority levels that oMFT uses effectively:
 
-| Priority | Level | Usage in GoMFT |
+| Priority | Level | Usage in oMFT |
 |----------|-------|----------------|
 | -2 | Lowest | Silent transfer logs, debugging info |
 | -1 | Low | Successful transfers, routine events |
@@ -111,7 +111,7 @@ URL Title: View Transfer Details
 
 To troubleshoot notification issues:
 
-1. Check the GoMFT logs: **Admin Tools** > **Logs** > filter for "pushover"
+1. Check the oMFT logs: **Admin Tools** > **Logs** > filter for "pushover"
 2. Review your Pushover account's message history
 3. Check your device's Pushover app settings
 

@@ -5,11 +5,11 @@ title: Connections
 
 # Connection Management
 
-Connections in GoMFT are configurations that define how to access different storage systems. Before you can transfer files, you need to set up connections for your source and destination systems.
+Connections in oMFT are configurations that define how to access different storage systems. Before you can transfer files, you need to set up connections for your source and destination systems.
 
 ## Supported Connection Types
 
-GoMFT leverages rclone as its transfer engine, supporting a wide range of storage systems:
+oMFT leverages rclone as its transfer engine, supporting a wide range of storage systems:
 
 ### Cloud Storage
 
@@ -26,7 +26,7 @@ GoMFT leverages rclone as its transfer engine, supporting a wide range of storag
 
 ### Local Storage
 
-- **Local Disk**: Files on the server running GoMFT
+- **Local Disk**: Files on the server running oMFT
 - **SMB/CIFS**: Windows file sharing
 
 ## Creating a Connection
@@ -72,7 +72,7 @@ Different connection types require different configuration fields. Here are some
 
 ## Connection Security
 
-GoMFT follows best practices for handling connection credentials:
+oMFT follows best practices for handling connection credentials:
 
 - **Encryption**: All sensitive credentials are encrypted at rest
 - **Access Control**: Connections are protected by user permissions
@@ -110,10 +110,10 @@ To delete a connection:
 
 ## Testing Transfer Configurations
 
-GoMFT includes a configuration testing feature to verify connectivity:
+oMFT includes a configuration testing feature to verify connectivity:
 
 1. After entering details for a configuration, click **Test Source/Destination**
-2. GoMFT will attempt to authenticate with the remote system
+2. oMFT will attempt to authenticate with the remote system
 3. For file storage, it will also verify read/write permissions
 4. Results will display showing success or failure details
 

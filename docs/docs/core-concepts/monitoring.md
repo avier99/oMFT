@@ -5,11 +5,11 @@ title: Monitoring
 
 # Monitoring and Reporting
 
-GoMFT provides comprehensive monitoring and reporting features to help you track transfer activities, analyze performance, and ensure reliable operation. This page explains the monitoring tools available in GoMFT.
+oMFT provides comprehensive monitoring and reporting features to help you track transfer activities, analyze performance, and ensure reliable operation. This page explains the monitoring tools available in oMFT.
 
 ## Dashboard
 
-The GoMFT dashboard provides a real-time overview of your file transfer system:
+The oMFT dashboard provides a real-time overview of your file transfer system:
 
 ### Dashboard Components
 
@@ -19,7 +19,7 @@ The GoMFT dashboard provides a real-time overview of your file transfer system:
 - **Quick Actions**: Buttons for common tasks like creating transfers or checking logs
 
 To access the dashboard:
-1. Log in to GoMFT
+1. Log in to oMFT
 2. The dashboard is the default landing page
 3. You can return to it anytime by clicking **Dashboard** in the sidebar
 
@@ -42,7 +42,7 @@ To access transfer history:
 
 ## Real-Time Monitoring
 
-GoMFT provides real-time monitoring of active transfers:
+oMFT provides real-time monitoring of active transfers:
 
 ### Active Transfers
 
@@ -59,7 +59,7 @@ To monitor active transfers:
 
 ## Detailed Transfer Logs
 
-For each transfer execution, GoMFT maintains detailed logs:
+For each transfer execution, oMFT maintains detailed logs:
 
 ### Log Information
 
@@ -76,11 +76,11 @@ To access detailed logs:
 
 ## System Monitoring
 
-GoMFT monitors the health and performance of the system itself:
+oMFT monitors the health and performance of the system itself:
 
 ## Alerts and Notifications
 
-GoMFT can alert you to important events:
+oMFT can alert you to important events:
 
 ### Alert Types
 
@@ -94,7 +94,7 @@ To configure alerts:
 
 ## Export and API Access
 
-GoMFT allows you to export monitoring data:
+oMFT allows you to export monitoring data:
 
 ### Export Options
 

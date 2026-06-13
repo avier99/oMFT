@@ -5,13 +5,13 @@ title: Security Best Practices
 
 # Security Best Practices
 
-This guide provides recommendations for securing your GoMFT installation and maintaining a secure file transfer environment.
+This guide provides recommendations for securing your oMFT installation and maintaining a secure file transfer environment.
 
 ## Installation Security
 
 ### Use Docker Security Features
 
-When deploying GoMFT with Docker:
+When deploying oMFT with Docker:
 
 - **Run as Non-Root**: Always run the container as a non-root user (see [Running as Non-Root](/docs/security/non-root))
 - **Use Read-Only Filesystem**: Mount the filesystem as read-only except for specific data directories
@@ -23,8 +23,8 @@ Example secure docker-compose configuration:
 
 ```yaml
 services:
-  gomft:
-    image: starfleetcptn/gomft:latest
+  omft:
+    image: ghcr.io/avier99/omft:latest
     user: "1000:1000"
     read_only: true
     cap_drop:
@@ -49,7 +49,7 @@ services:
 
 For traditional installations:
 
-- **Dedicated User**: Create a dedicated system user for running GoMFT
+- **Dedicated User**: Create a dedicated system user for running oMFT
 - **Minimal Permissions**: Give the user only the permissions it needs
 - **Firewall Rules**: Restrict access to only necessary ports
 - **SELinux/AppArmor**: Use system security modules to limit application scope
@@ -68,7 +68,7 @@ Always use HTTPS for the web interface:
 ### Access Control
 
 - **IP Restrictions**: Limit access to trusted IP addresses where possible
-- **VPN Access**: Consider placing GoMFT behind a VPN for additional security
+- **VPN Access**: Consider placing oMFT behind a VPN for additional security
 - **Firewall Rules**: Configure firewall rules to restrict access to essential ports only
 
 ## Authentication and Authorization
@@ -136,13 +136,13 @@ Always use HTTPS for the web interface:
 
 ### Regular Updates
 
-- **Update GoMFT**: Keep GoMFT updated to the latest version
+- **Update oMFT**: Keep oMFT updated to the latest version
 - **Patch Host System**: Keep the host operating system patched
 - **Update Dependencies**: Keep all dependencies (Docker, etc.) updated
 
 ### Backup and Recovery
 
-- **Regular Backups**: Back up the GoMFT database and configurations regularly
+- **Regular Backups**: Back up the oMFT database and configurations regularly
 - **Secure Backups**: Encrypt backups and store them securely
 - **Test Restoration**: Regularly test backup restoration
 - **Disaster Recovery Plan**: Create and maintain a disaster recovery plan
@@ -164,10 +164,10 @@ Always use HTTPS for the web interface:
 
 ## Integrating with Security Tools
 
-GoMFT can be integrated with external security tools:
+oMFT can be integrated with external security tools:
 
 - **SIEM Integration**: Forward logs to Security Information and Event Management tools
-- **Vulnerability Scanners**: Include GoMFT in vulnerability scanning
+- **Vulnerability Scanners**: Include oMFT in vulnerability scanning
 - **Compliance Tools**: Integrate with compliance monitoring tools
 
 ## Best Practices for Specific Environments
@@ -181,7 +181,7 @@ GoMFT can be integrated with external security tools:
 
 ### On-Premises Deployment
 
-- **Network Segmentation**: Place GoMFT in an appropriate network segment
+- **Network Segmentation**: Place oMFT in an appropriate network segment
 - **Physical Security**: Ensure physical security of the servers
 - **Environmental Controls**: Implement appropriate environmental controls
 - **Backup Power**: Ensure backup power for critical systems 

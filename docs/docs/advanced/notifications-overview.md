@@ -5,11 +5,11 @@ title: Notifications Overview
 
 # Notifications Overview
 
-GoMFT provides a comprehensive notification system to keep you informed about important events in your file transfer workflows. This page provides an overview of the notification system and the different notification types available.
+oMFT provides a comprehensive notification system to keep you informed about important events in your file transfer workflows. This page provides an overview of the notification system and the different notification types available.
 
 ## Notification System
 
-The notification system in GoMFT is designed to be:
+The notification system in oMFT is designed to be:
 
 - **Flexible**: Choose from multiple notification channels
 - **Configurable**: Set up different notifications for different events
@@ -18,7 +18,7 @@ The notification system in GoMFT is designed to be:
 
 ## Notification Triggers
 
-Notifications can be triggered by various events in GoMFT:
+Notifications can be triggered by various events in oMFT:
 
 ### Transfer-Related Events
 
@@ -42,7 +42,7 @@ Notifications can be triggered by various events in GoMFT:
 
 ## Notification Types
 
-GoMFT supports multiple notification types to ensure you can receive alerts through your preferred channels:
+oMFT supports multiple notification types to ensure you can receive alerts through your preferred channels:
 
 
 ### Webhook Notifications
@@ -109,7 +109,7 @@ Notifications are configured at multiple levels:
 
 ### Notification History
 
-GoMFT maintains a history of sent notifications, allowing you to:
+oMFT maintains a history of sent notifications, allowing you to:
 
 - Review past notifications
 - Verify notification delivery
@@ -118,7 +118,7 @@ GoMFT maintains a history of sent notifications, allowing you to:
 
 ## Getting Started with Notifications
 
-To start using GoMFT notifications:
+To start using oMFT notifications:
 
 1. Navigate to **Settings** > **Notifications**
 2. Configure your preferred notification channels

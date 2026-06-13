@@ -1,6 +1,6 @@
-# GoMFT Testing Guide
+# oMFT Testing Guide
 
-This document outlines the testing strategy and approaches for the GoMFT application.
+This document outlines the testing strategy and approaches for the oMFT application.
 
 ## Testing Structure
 
@@ -399,7 +399,7 @@ The Admin Tools interface, particularly the Log Viewer, requires testing:
 
 ## Conclusion
 
-Continued focus on testing will ensure the reliability and maintainability of the GoMFT application. By systematically addressing each component, we can achieve high test coverage and confidence in the codebase.
+Continued focus on testing will ensure the reliability and maintainability of the oMFT application. By systematically addressing each component, we can achieve high test coverage and confidence in the codebase.
 
 The recent addition of webhook notification capabilities and admin tools, including the Log Viewer, has expanded the testing requirements. These new features involve various aspects of the system, from HTTP handling to file system operations, and require a comprehensive testing approach that considers:
 
@@ -408,4 +408,4 @@ The recent addition of webhook notification capabilities and admin tools, includ
 3. **Integration Testing**: Verifying the components work together correctly
 4. **Security Testing**: Validating security measures like HMAC signatures
 
-By implementing the testing strategies outlined in this document, we can ensure that all components of the GoMFT system, including these newer features, maintain high quality and reliability. 
+By implementing the testing strategies outlined in this document, we can ensure that all components of the oMFT system, including these newer features, maintain high quality and reliability. 

@@ -5,11 +5,11 @@ title: Transfers
 
 # Transfer Operations
 
-GoMFT's primary function is to manage file transfers between different storage systems. This page explains the transfer operations available in GoMFT and how to configure them.
+oMFT's primary function is to manage file transfers between different storage systems. This page explains the transfer operations available in oMFT and how to configure them.
 
 ## Transfer Types
 
-GoMFT supports several types of transfer operations, each with different behaviors:
+oMFT supports several types of transfer operations, each with different behaviors:
 
 ### Copy
 
@@ -45,7 +45,7 @@ Source ⟷ Destination
 
 ## Transfer Configuration
 
-When creating a transfer in GoMFT, you need to configure the following elements:
+When creating a transfer in oMFT, you need to configure the following elements:
 
 ### Basic Configuration
 
@@ -116,7 +116,7 @@ Transfers can be scheduled to run automatically:
 
 ### Transfer Details
 
-For each transfer execution, GoMFT records:
+For each transfer execution, oMFT records:
 
 - Start and end times
 - Duration
@@ -128,7 +128,7 @@ For each transfer execution, GoMFT records:
 
 ## Transfer Logs
 
-GoMFT provides detailed logs for each transfer:
+oMFT provides detailed logs for each transfer:
 
 1. Navigate to **Transfer History**
 2. Click on a **View Details** button on the transfer entry
@@ -143,7 +143,7 @@ The logs include information about:
 
 ## Troubleshooting Failed Transfers
 
-When a transfer fails, GoMFT provides information to help identify the cause:
+When a transfer fails, oMFT provides information to help identify the cause:
 
 1. Check the error message in the transfer history
 2. Review the detailed logs for the specific error

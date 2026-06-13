@@ -5,13 +5,13 @@ title: Docker Deployment
 
 # Docker Deployment Guide
 
-This guide provides detailed instructions for deploying GoMFT using Docker and Docker Compose, including advanced configuration options and best practices.
+This guide provides detailed instructions for deploying oMFT using Docker and Docker Compose, including advanced configuration options and best practices.
 
 ## Docker Image Information
 
-GoMFT is available as a Docker image on Docker Hub:
+oMFT is available as a Docker image on Docker Hub:
 
-- **Image Name**: `starfleetcptn/gomft`
+- **Image Name**: `ghcr.io/avier99/omft`
 - **Tags**:
   - `latest` - Latest stable release
   - `edge` - Latest development build
@@ -19,15 +19,15 @@ GoMFT is available as a Docker image on Docker Hub:
 
 ## Basic Docker Run Command
 
-The simplest way to run GoMFT with Docker:
+The simplest way to run oMFT with Docker:
 
 ```bash
 docker run -d \
-  --name gomft \
+  --name omft \
   -p 8080:8080 \
   -v $(pwd)/data:/app/data \
   -v $(pwd)/backups:/app/backups \
-  starfleetcptn/gomft:latest
+  ghcr.io/avier99/omft:latest
 ```
 
 ## Docker Compose Setup
@@ -38,9 +38,9 @@ For a more complete and production-ready setup, use Docker Compose:
 version: '3'
 
 services:
-  gomft:
-    image: starfleetcptn/gomft:latest
-    container_name: gomft
+  omft:
+    image: ghcr.io/avier99/omft:latest
+    container_name: omft
     ports:
       - "8080:8080"
     volumes:
@@ -61,7 +61,7 @@ docker-compose up -d
 
 ## Persisting Data
 
-GoMFT stores data in specific directories that should be mounted as volumes:
+oMFT stores data in specific directories that should be mounted as volumes:
 
 - **/app/data**: Contains the SQLite database, rclone configurations, and logs
 - **/app/backups**: Contains database backups
@@ -78,7 +78,7 @@ volumes:
 
 ## File Transfer Volumes
 
-In addition to the application data, you'll need to mount volumes for the files you want to transfer. These volumes provide GoMFT access to your source files and destination directories.
+In addition to the application data, you'll need to mount volumes for the files you want to transfer. These volumes provide oMFT access to your source files and destination directories.
 
 ### Common File Volume Mounts
 
@@ -98,23 +98,23 @@ volumes:
 
 ```bash
 docker run -d \
-  --name gomft \
+  --name omft \
   -p 8080:8080 \
   -v $(pwd)/data:/app/data \
   -v $(pwd)/backups:/app/backups \
   -v /path/to/source/files:/sftp/files \
   -v /path/to/destination:/mft/destination \
   -v /path/to/temp:/mft/temp \
-  starfleetcptn/gomft:latest
+  ghcr.io/avier99/omft:latest
 ```
 
 ### Docker Compose Example with File Volumes
 
 ```yaml
 services:
-  gomft:
-    image: starfleetcptn/gomft:latest
-    container_name: gomft
+  omft:
+    image: ghcr.io/avier99/omft:latest
+    container_name: omft
     ports:
       - "8080:8080"
     volumes:
@@ -153,7 +153,7 @@ When mounting file volumes, ensure the container has appropriate permissions to 
 
 ## Environment Variables
 
-GoMFT can be configured using environment variables:
+oMFT can be configured using environment variables:
 
 ### Basic Configuration
 
@@ -195,7 +195,7 @@ environment:
 
 ## Running as Non-Root User
 
-For enhanced security, run GoMFT as a non-root user:
+For enhanced security, run oMFT as a non-root user:
 
 ```yaml
 environment:
@@ -205,9 +205,9 @@ environment:
 
 Make sure your mounted volumes have the appropriate permissions for this user.
 
-## Exposing GoMFT Behind a Reverse Proxy
+## Exposing oMFT Behind a Reverse Proxy
 
-It's recommended to run GoMFT behind a reverse proxy like Nginx or Traefik for SSL termination and security.
+It's recommended to run oMFT behind a reverse proxy like Nginx or Traefik for SSL termination and security.
 
 ### Nginx Example
 
@@ -226,7 +226,7 @@ server {
     ssl_certificate_key /etc/nginx/ssl/key.pem;
 
     location / {
-        proxy_pass http://gomft:8080;
+        proxy_pass http://omft:8080;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -259,8 +259,8 @@ services:
       - ./acme.json:/acme.json
     restart: unless-stopped
 
-  gomft:
-    image: starfleetcptn/gomft:latest
+  omft:
+    image: ghcr.io/avier99/omft:latest
     volumes:
       - ./data:/app/data
       - ./backups:/app/backups
@@ -270,9 +270,9 @@ services:
       - BASE_URL=https://gomft.example.com
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.gomft.rule=Host(`gomft.example.com`)"
-      - "traefik.http.routers.gomft.entrypoints=websecure"
-      - "traefik.http.routers.gomft.tls.certresolver=myresolver"
+      - "traefik.http.routers.omft.rule=Host(`gomft.example.com`)"
+      - "traefik.http.routers.omft.entrypoints=websecure"
+      - "traefik.http.routers.omft.tls.certresolver=myresolver"
     restart: unless-stopped
 ```
 
@@ -322,12 +322,12 @@ If you encounter issues with your Docker deployment:
 
 1. Check container logs:
    ```
-   docker logs gomft
+   docker logs omft
    ```
 
 2. Check container status:
    ```
-   docker ps -a | grep gomft
+   docker ps -a | grep omft
    ```
 
 3. Verify volume permissions:
@@ -337,12 +337,12 @@ If you encounter issues with your Docker deployment:
 
 4. Check container environment:
    ```
-   docker exec gomft env
+   docker exec omft env
    ```
 
 5. Inspect the container:
    ```
-   docker inspect gomft
+   docker inspect omft
    ```
 
-For more help, refer to the [GitHub repository](https://github.com/StarFleetCPTN/GoMFT) or open an issue. 
+For more help, refer to the [GitHub repository](https://github.com/avier99/oMFT) or open an issue. 
