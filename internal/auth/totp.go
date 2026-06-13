@@ -14,13 +14,13 @@ import (
 
 	// "github.com/pquerna/otp/base32"
 	"github.com/pquerna/otp/totp"
-	"github.com/starfleetcptn/gomft/internal/config"
+	"github.com/avier99/oMFT/internal/config"
 	"golang.org/x/crypto/bcrypt"
 )
 
 const (
 	// IssuerName is the name of the issuer that appears in authenticator apps
-	IssuerName = "GoMFT"
+	IssuerName = "oMFT"
 	// SecretSize is the size of the TOTP secret in bytes
 	SecretSize = 20
 	// BackupCodeCount is the number of backup codes to generate

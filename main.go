@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/rand"
 	"embed"
+	"encoding/base64"
 	"fmt"
 	"io/fs"
 	"log"
@@ -15,13 +17,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"
 
-	// "github.com/starfleetcptn/gomft/internal/api"
-	"github.com/starfleetcptn/gomft/components"
-	"github.com/starfleetcptn/gomft/internal/config"
-	"github.com/starfleetcptn/gomft/internal/db"
-	"github.com/starfleetcptn/gomft/internal/logging"
-	"github.com/starfleetcptn/gomft/internal/scheduler"
-	"github.com/starfleetcptn/gomft/internal/web"
+	// "github.com/avier99/oMFT/internal/api"
+	"github.com/avier99/oMFT/components"
+	"github.com/avier99/oMFT/internal/config"
+	"github.com/avier99/oMFT/internal/db"
+	"github.com/avier99/oMFT/internal/logging"
+	"github.com/avier99/oMFT/internal/scheduler"
+	"github.com/avier99/oMFT/internal/web"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -86,7 +88,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Printf("Starting GoMFT server version %s...", components.AppVersion)
+	log.Printf("Starting oMFT server version %s...", components.AppVersion)
 	log.Printf("Configuration loaded successfully")
 
 	// Ensure required directories exist
@@ -116,8 +118,14 @@ func main() {
 	database.Model(&db.User{}).Count(&count)
 	if count == 0 {
 		log.Printf("No users found, creating default admin user")
-		// Generate password hash
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+		// Generate random password
+		b := make([]byte, 16)
+		if _, err := rand.Read(b); err != nil {
+			log.Fatalf("Failed to generate random password: %v", err)
+		}
+		password := base64.URLEncoding.EncodeToString(b)[:16]
+
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		if err != nil {
 			log.Fatalf("Failed to hash password: %v", err)
 		}
@@ -133,7 +141,12 @@ func main() {
 		if err := database.CreateUser(adminUser); err != nil {
 			log.Fatalf("Failed to create admin user: %v", err)
 		}
-		log.Printf("Default admin user created successfully")
+		log.Printf("============================================================")
+		log.Printf("FIRST RUN: Default admin account created")
+		log.Printf("  Email:    admin@example.com")
+		log.Printf("  Password: %s", password)
+		log.Printf("  Change this immediately after first login!")
+		log.Printf("============================================================")
 
 		// Assign admin role to admin user
 		if err := database.AssignRoleToUser(adminUser.ID, 1, 1); err != nil {

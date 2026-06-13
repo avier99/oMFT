@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="static/img/logo.svg" alt="GoMFT Logo" width="200">
+  <img src="static/img/logo.svg" alt="oMFT Logo" width="200">
 </p>
 
-<h1 align="center">GoMFT - Go Managed File Transfer</h1>
+<h1 align="center">oMFT - Go Managed File Transfer</h1>
 
-GoMFT is a web-based managed file transfer application built with Go, leveraging rclone for robust file transfer capabilities. It provides a user-friendly interface for configuring, scheduling, and monitoring file transfers across various storage providers.
+oMFT is a web-based managed file transfer application built with Go, leveraging rclone for robust file transfer capabilities. It provides a user-friendly interface for configuring, scheduling, and monitoring file transfers across various storage providers.
 
 <p align="center">
   <a href="https://discord.gg/f9dwtM3j">
     <img src="https://img.shields.io/discord/1351354052654403675?color=7289da&logo=discord&logoColor=white&label=Discord" alt="Join our Discord server!" />
   </a>
-  <a href="https://starfleetcptn.github.io/GoMFT/">
+  <a href="https://avier99.github.io/oMFT/">
     <img src="https://img.shields.io/badge/docs-online-blue.svg" alt="Documentation" />
   </a>
 </p>
@@ -128,8 +128,8 @@ GoMFT is a web-based managed file transfer application built with Go, leveraging
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/starfleetcptn/gomft.git
-cd gomft
+git clone https://github.com/ghcr.io/avier99/omft.git
+cd oMFT
 ```
 
 2. Install dependencies:
@@ -139,16 +139,16 @@ go mod download
 
 3. Build the application:
 ```bash
-go build -o gomft
+go build -o omft
 ```
 
 ### Docker Installation
 
-GoMFT is available as a Docker image for quick and easy deployment.
+oMFT is available as a Docker image for quick and easy deployment.
 
 1. Pull the latest image from Docker Hub:
 ```bash
-docker pull starfleetcptn/gomft:latest
+docker pull ghcr.io/avier99/omft:latest
 ```
 
 2. Run the container:
@@ -156,48 +156,48 @@ docker pull starfleetcptn/gomft:latest
 #### Basic run
 ```bash
 docker run -d \
-  --name gomft \
+  --name omft \
   -p 8080:8080 \
   -v /path/to/data:/app/data \
   -v /path/to/backups:/app/backups \
-  starfleetcptn/gomft:latest
+  ghcr.io/avier99/omft:latest
 ```
 
 #### Run with specific user ID and group ID (using environment variables)
 ```bash
 docker run -d \
-  --name gomft \
+  --name omft \
   -p 8080:8080 \
   -v /path/to/data:/app/data \
   -v /path/to/backups:/app/backups \
   -e PUID=$(id -u) \
   -e PGID=$(id -g) \
-  starfleetcptn/gomft:latest
+  ghcr.io/avier99/omft:latest
 ```
 
 #### Or specify user IDs directly
 ```bash
 docker run -d \
-  --name gomft \
+  --name omft \
   -p 8080:8080 \
   -v /path/to/data:/app/data \
   -v /path/to/backups:/app/backups \
   -e PUID=1001 \
   -e PGID=1001 \
-  starfleetcptn/gomft:latest
+  ghcr.io/avier99/omft:latest
 ```
 
 #### Using a .env file for configuration
 ```bash
 docker run -d \
-  --name gomft \
+  --name omft \
   -p 8080:8080 \
   -v /path/to/data:/app/data \
   -v /path/to/backups:/app/backups \
   -v /path/to/.env:/app/.env \
   -e PUID=$(id -u) \
   -e PGID=$(id -g) \
-  starfleetcptn/gomft:latest
+  ghcr.io/avier99/omft:latest
 ```
 3. Access the web interface at `http://localhost:8080`
 
@@ -208,9 +208,9 @@ For production deployments, you can use Docker Compose with environment variable
 ```yaml
 version: '3'
 services:
-  gomft:
-    image: starfleetcptn/gomft:latest
-    container_name: gomft
+  omft:
+    image: ghcr.io/avier99/omft:latest
+    container_name: omft
     restart: unless-stopped
     ports:
       - "8080:8080"
@@ -234,7 +234,7 @@ services:
       - EMAIL_HOST=smtp.example.com
       - EMAIL_PORT=587
       - EMAIL_FROM_EMAIL=gomft@example.com
-      - EMAIL_FROM_NAME=GoMFT
+      - EMAIL_FROM_NAME=oMFT
       - EMAIL_ENABLE_TLS=true
       - EMAIL_REQUIRE_AUTH=true
       - EMAIL_USERNAME=smtp_username
@@ -253,13 +253,13 @@ Save this as `docker-compose.yml` and run:
 docker-compose up -d
 ```
 
-For more information and available tags, visit the [GoMFT Docker Hub page](https://hub.docker.com/r/starfleetcptn/gomft).
+For more information and available tags, visit the [oMFT Docker Hub page](https://hub.docker.com/r/ghcr.io/avier99/omft).
 
 ---
 
 ## Configuration
 
-GoMFT uses an environment file located at `.env` in the root directory of the application. On first run, a default configuration will be created:
+oMFT uses an environment file located at `.env` in the root directory of the application. On first run, a default configuration will be created:
 
 ```ini
 # Basic configuration
@@ -278,7 +278,7 @@ EMAIL_ENABLED=true
 EMAIL_HOST=smtp.example.com
 EMAIL_PORT=587
 EMAIL_FROM_EMAIL=gomft@example.com
-EMAIL_FROM_NAME=GoMFT
+EMAIL_FROM_NAME=oMFT
 EMAIL_REPLY_TO=
 EMAIL_ENABLE_TLS=true
 EMAIL_REQUIRE_AUTH=true
@@ -329,7 +329,7 @@ PGID=1000
     - Example: `SKIP_SSL_VERIFY=true`
 ### Logging Configuration
 
-GoMFT provides configurable logging with rotation support through the following environment variables:
+oMFT provides configurable logging with rotation support through the following environment variables:
 
 - `LOGS_DIR`: Directory where log files are stored (default: `./data/logs`)
 - `LOG_MAX_SIZE`: Maximum size in megabytes for each log file before rotation (default: `10`)
@@ -349,7 +349,7 @@ Log files contain detailed information about file transfers, job execution, and 
 
 1. Start the server:
 ```bash
-./gomft
+./omft
 ```
 
 2. Access the web interface at `http://localhost:8080`
@@ -445,7 +445,7 @@ Log files contain detailed information about file transfers, job execution, and 
 
 ### User Management
 
-GoMFT uses a role-based access control system with flexible authentication options:
+oMFT uses a role-based access control system with flexible authentication options:
 
 - **Administrators**: Can create and manage users, access all features
 - **Regular Users**: Can manage transfers and view history
@@ -611,7 +611,7 @@ The following fields have been added to the `users` table:
 
 ### Email Notifications
 
-GoMFT supports email notifications for various features:
+oMFT supports email notifications for various features:
 
 - **Password Reset**: Users can request password reset links sent to their registered email
 - **Styled Emails**: Professional HTML emails that match the application's design theme
@@ -629,7 +629,7 @@ To configure email functionality:
 
 ### Webhook Integration
 
-GoMFT can send webhook notifications to external systems when jobs complete. This allows integration with monitoring tools, chat applications, custom notification systems, or workflow automation platforms.
+oMFT can send webhook notifications to external systems when jobs complete. This allows integration with monitoring tools, chat applications, custom notification systems, or workflow automation platforms.
 
 #### Webhook Payload Structure
 
@@ -671,7 +671,7 @@ For failed transfers, additional error information is included:
 
 #### Webhook Authentication
 
-When a webhook secret is configured, GoMFT signs the payload using HMAC-SHA256 and includes the signature in the `X-Hub-Signature-256` header. To verify the webhook:
+When a webhook secret is configured, oMFT signs the payload using HMAC-SHA256 and includes the signature in the `X-Hub-Signature-256` header. To verify the webhook:
 
 1. Compute the HMAC-SHA256 of the raw request body using your shared secret
 2. Compare it with the value in the `X-Hub-Signature-256` header
@@ -681,7 +681,7 @@ This ensures that webhook requests are authentic and haven't been tampered with.
 
 ### Admin Tools
 
-GoMFT provides a comprehensive set of administrative tools for system management and monitoring:
+oMFT provides a comprehensive set of administrative tools for system management and monitoring:
 
 #### Log Viewer
 
@@ -774,7 +774,7 @@ air
 
 ## Directory Structure
 
-GoMFT uses the following directory structure:
+oMFT uses the following directory structure:
 
 - `/app/data`: Main application data directory
   - Contains the SQLite database (`gomft.db`)

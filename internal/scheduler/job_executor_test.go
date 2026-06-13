@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/robfig/cron/v3"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 	"gorm.io/gorm"
 )
 

@@ -4,11 +4,11 @@ import (
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/internal/config"
-	"github.com/starfleetcptn/gomft/internal/db"
-	"github.com/starfleetcptn/gomft/internal/email"
-	"github.com/starfleetcptn/gomft/internal/scheduler"
-	"github.com/starfleetcptn/gomft/internal/web/handlers"
+	"github.com/avier99/oMFT/internal/config"
+	"github.com/avier99/oMFT/internal/db"
+	"github.com/avier99/oMFT/internal/email"
+	"github.com/avier99/oMFT/internal/scheduler"
+	"github.com/avier99/oMFT/internal/web/handlers"
 )
 
 // Handler is a wrapper around the handlers package

@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/components"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/components"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // getLatestGitHubRelease fetches the latest release tag from GitHub
@@ -22,7 +22,7 @@ func getLatestGitHubRelease() string {
 	}
 
 	// Make a request to the GitHub API
-	resp, err := client.Get("https://api.github.com/repos/starfleetcptn/gomft/releases/latest")
+	resp, err := client.Get("https://api.github.com/repos/avier99/oMFT/releases/latest")
 	if err != nil {
 		return ""
 	}

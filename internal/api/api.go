@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/internal/auth"
-	"github.com/starfleetcptn/gomft/internal/db"
-	"github.com/starfleetcptn/gomft/internal/scheduler"
+	"github.com/avier99/oMFT/internal/auth"
+	"github.com/avier99/oMFT/internal/db"
+	"github.com/avier99/oMFT/internal/scheduler"
 	"golang.org/x/crypto/bcrypt"
 )
 

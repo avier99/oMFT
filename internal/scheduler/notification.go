@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 	"gorm.io/gorm" // Needed for the Create method signature in the interface
 )
 
@@ -121,7 +121,7 @@ func (n *Notifier) sendJobWebhookNotification(job *db.Job, history *db.JobHistor
 
 	// Set headers
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "GoMFT-Webhook/1.0")
+	req.Header.Set("User-Agent", "oMFT-Webhook/1.0")
 
 	// Add X-Hub-Signature if secret is configured
 	if job.WebhookSecret != "" {
@@ -279,7 +279,7 @@ func (n *Notifier) sendEmailNotification(service *db.NotificationService, job *d
 	}
 
 	// Prepare email content
-	subject := fmt.Sprintf("[GoMFT] Job %s: %s", job.Name, history.Status)
+	subject := fmt.Sprintf("[oMFT] Job %s: %s", job.Name, history.Status)
 	body := generateEmailBody(job, history, config, eventType) // Use package-level helper
 
 	// TODO: Implement actual email sending logic
@@ -395,14 +395,14 @@ func (n *Notifier) sendServiceWebhookNotification(service *db.NotificationServic
 
 	// Set default headers
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "GoMFT-Notification/1.0")
+	req.Header.Set("User-Agent", "oMFT-Notification/1.0")
 
 	// Add signature if secret key is provided
 	if service.SecretKey != "" {
 		h := hmac.New(sha256.New, []byte(service.SecretKey))
 		h.Write(jsonPayload)
 		signature := hex.EncodeToString(h.Sum(nil))
-		req.Header.Set("X-GoMFT-Signature", signature)
+		req.Header.Set("X-oMFT-Signature", signature)
 	}
 
 	// Add custom headers if specified
@@ -505,7 +505,7 @@ func generateDefaultPayload(job *db.Job, history *db.JobHistory, config *db.Tran
 		},
 		"instance": map[string]interface{}{
 			"id":          "gomft",
-			"name":        "GoMFT",
+			"name":        "oMFT",
 			"version":     "1.0",        // TODO: Get actual version
 			"environment": "production", // TODO: Get from env
 		},
@@ -809,7 +809,7 @@ func (n *Notifier) sendPushbulletNotification(service *db.NotificationService, j
 	// Prepare notification title
 	titleTemplate := service.Config["title_template"]
 	if titleTemplate == "" {
-		titleTemplate = "GoMFT: {{job.event}} - {{job.name}}"
+		titleTemplate = "oMFT: {{job.event}} - {{job.name}}"
 	}
 
 	// Prepare notification body
@@ -891,7 +891,7 @@ func (n *Notifier) sendNtfyNotification(service *db.NotificationService, job *db
 	// Prepare notification title
 	titleTemplate := service.Config["title_template"]
 	if titleTemplate == "" {
-		titleTemplate = "GoMFT: {{job.event}} - {{job.name}}"
+		titleTemplate = "oMFT: {{job.event}} - {{job.name}}"
 	}
 
 	// Prepare notification body
@@ -989,7 +989,7 @@ func (n *Notifier) sendGotifyNotification(service *db.NotificationService, job *
 	// Prepare notification title
 	titleTemplate := service.Config["title_template"]
 	if titleTemplate == "" {
-		titleTemplate = "GoMFT: {{job.event}} - {{job.name}}"
+		titleTemplate = "oMFT: {{job.event}} - {{job.name}}"
 	}
 
 	// Prepare notification message
@@ -1078,7 +1078,7 @@ func (n *Notifier) sendPushoverNotification(service *db.NotificationService, job
 	// Prepare notification title
 	titleTemplate := service.Config["title_template"]
 	if titleTemplate == "" {
-		titleTemplate = "GoMFT: {{job.event}} - {{job.name}}"
+		titleTemplate = "oMFT: {{job.event}} - {{job.name}}"
 	}
 
 	// Prepare notification message

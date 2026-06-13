@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 	"gorm.io/gorm"
 )
 

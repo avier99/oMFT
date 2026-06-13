@@ -17,8 +17,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/starfleetcptn/gomft/components"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/components"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // HandleAdminDashboard renders the admin dashboard page

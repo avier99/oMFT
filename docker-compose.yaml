@@ -1,46 +1,33 @@
 services:
-  gomft:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        # Set the UID/GID to match your host user for better file permissions
-        # Default is 1000:1000 if not specified
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
-        # Version information
-        VERSION: ${VERSION:-dev}
-        BUILD_TIME: ${BUILD_TIME:-unknown}
-        COMMIT: ${COMMIT:-unknown}
-    container_name: gomft
+  omft:
+    image: ghcr.io/avier99/omft:latest
+    container_name: omft
     restart: unless-stopped
     ports:
       - "8080:8080"
     volumes:
-      # Main data directory - contains DB and configs
-      - gomft-data:/app/data
-      # Separate backups directory
-      - gomft-backups:/app/backups
-      # For development, you can mount the source code
-      # - .:/app
+      - omft-data:/app/data
+      - omft-backups:/app/backups
     environment:
       - TZ=UTC
+      - SERVER_ADDRESS=:8080
       - DATA_DIR=/app/data
       - BACKUP_DIR=/app/backups
-      - LOGS_DIR=/app/data/logs
-      # - LOG_LEVEL=info
-    networks:
-      - gomft-network
-    # For non-root installs, the container needs to run with the same UID
-    # as the host user to access mounted volumes properly
-    user: ${UID:-1000}:${GID:-1000}
-
-networks:
-  gomft-network:
-    driver: bridge
+      - BASE_URL=http://localhost:8080
+      - JWT_SECRET=change_this_to_a_secure_random_string
+      - TOTP_ENCRYPTION_KEY=change_this_to_a_32_byte_key_here
+      - SKIP_SSL_VERIFY=false
+      # Email (optional — remove if not using)
+      - EMAIL_ENABLED=false
+      - EMAIL_HOST=smtp.example.com
+      - EMAIL_PORT=587
+      - EMAIL_USERNAME=your_smtp_username
+      - EMAIL_PASSWORD=your_smtp_password
+      - EMAIL_FROM_EMAIL=omft@example.com
+      - EMAIL_FROM_NAME=oMFT
+      - EMAIL_ENABLE_TLS=true
+      - EMAIL_REQUIRE_AUTH=true
 
 volumes:
-  gomft-data:
-    driver: local
-  gomft-backups:
-    driver: local 
+  omft-data:
+  omft-backups:

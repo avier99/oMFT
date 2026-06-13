@@ -2,7 +2,7 @@
 set -e
 
 # Default username
-USERNAME=${USERNAME:-gomft}
+USERNAME=${USERNAME:-omft}
 
 # If PUID/PGID env vars are set, update the user's UID/GID
 if [ -n "${PUID}" ] && [ -n "${PGID}" ]; then

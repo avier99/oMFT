@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/components"
+	"github.com/avier99/oMFT/components"
 
-	"github.com/starfleetcptn/gomft/internal/db"
-	"github.com/starfleetcptn/gomft/internal/rclone_service" // Assuming we create this package
+	"github.com/avier99/oMFT/internal/db"
+	"github.com/avier99/oMFT/internal/rclone_service" // Assuming we create this package
 )
 
 // HandleConfigs handles the GET /configs route

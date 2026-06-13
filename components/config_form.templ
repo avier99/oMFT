@@ -1,12 +1,13 @@
 package components
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 	"context"
-	"github.com/starfleetcptn/gomft/components/providers/source"
-	"github.com/starfleetcptn/gomft/components/providers/destination"
-	"github.com/starfleetcptn/gomft/components/providers/common"
+	"github.com/avier99/oMFT/components/providers/source"
+	"github.com/avier99/oMFT/components/providers/destination"
+	"github.com/avier99/oMFT/components/providers/common"
 )
 
 type ConfigFormData struct {
@@ -185,82 +186,149 @@ func getInitialData(config *db.TransferConfig) string {
 		}
 	}
 
-	// Return the JSON-formatted string with all the data, add new path validation states
-	return fmt.Sprintf(`{
-		name: '%s',
-		sourceType: '%s',
-		sourcePath: '%s',
-		sourceHost: '%s',
-		sourcePort: %d,
-		sourceUser: '%s',
-		sourcePassword: '%s',
-		sourceKeyFile: '%s',
-		sourceAuthType: '%s',
-		sourceBucket: '%s',
-		sourceRegion: '%s',
-		sourceAccessKey: '%s',
-		sourceSecretKey: '%s',
-		sourceEndpoint: '%s',
-		sourceShare: '%s',
-		sourceDomain: '%s',
-		sourcePassiveMode: %v,
-		sourceClientId: '%s',
-		sourceClientSecret: '%s',
-		sourceDriveId: '%s',
-		sourceTeamDrive: '%s',
-		sourceReadOnly: %v,
-		sourceStartYear: %d,
-		sourceIncludeArchived: %v,
-		
-		filePattern: '%s',
-		outputPattern: '%s',
-		
-		destinationType: '%s',
-		destinationPath: '%s',
-		destHost: '%s',
-		destPort: %d,
-		destUser: '%s',
-		destPassword: '%s',
-		destKeyFile: '%s',
-		destAuthType: '%s',
-		destBucket: '%s',
-		destRegion: '%s',
-		destAccessKey: '%s',
-		destSecretKey: '%s',
-		destEndpoint: '%s',
-		destShare: '%s',
-		destDomain: '%s',
-		destPassiveMode: %v,
-		destClientId: '%s',
-		destClientSecret: '%s',
-		destDriveId: '%s',
-		destTeamDrive: '%s',
-		destReadOnly: %v,
-		destStartYear: %d,
-		destIncludeArchived: %v,
-		
-		useBuiltinAuthSource: %v,
-		useBuiltinAuthDest: %v,
-		
-		archivePath: '%s',
-		archiveEnabled: %v,
-		deleteAfterTransfer: %v,
-		skipProcessedFiles: %v,
-		maxConcurrentTransfers: %d,
-		rcloneFlags: '%s',
-		commandId: %d,
-		commandFlags: '%s',
+	// Create a struct for JSON marshaling to prevent XSS
+	type initialData struct {
+		Name                    string `json:"name"`
+		SourceType              string `json:"sourceType"`
+		SourcePath              string `json:"sourcePath"`
+		SourceHost              string `json:"sourceHost"`
+		SourcePort              int    `json:"sourcePort"`
+		SourceUser              string `json:"sourceUser"`
+		SourcePassword          string `json:"sourcePassword"`
+		SourceKeyFile           string `json:"sourceKeyFile"`
+		SourceAuthType          string `json:"sourceAuthType"`
+		SourceBucket            string `json:"sourceBucket"`
+		SourceRegion            string `json:"sourceRegion"`
+		SourceAccessKey         string `json:"sourceAccessKey"`
+		SourceSecretKey         string `json:"sourceSecretKey"`
+		SourceEndpoint          string `json:"sourceEndpoint"`
+		SourceShare             string `json:"sourceShare"`
+		SourceDomain            string `json:"sourceDomain"`
+		SourcePassiveMode       bool   `json:"sourcePassiveMode"`
+		SourceClientId          string `json:"sourceClientId"`
+		SourceClientSecret      string `json:"sourceClientSecret"`
+		SourceDriveId           string `json:"sourceDriveId"`
+		SourceTeamDrive         string `json:"sourceTeamDrive"`
+		SourceReadOnly          bool   `json:"sourceReadOnly"`
+		SourceStartYear         int    `json:"sourceStartYear"`
+		SourceIncludeArchived   bool   `json:"sourceIncludeArchived"`
+		FilePattern             string `json:"filePattern"`
+		OutputPattern           string `json:"outputPattern"`
+		DestinationType         string `json:"destinationType"`
+		DestinationPath         string `json:"destinationPath"`
+		DestHost                string `json:"destHost"`
+		DestPort                int    `json:"destPort"`
+		DestUser                string `json:"destUser"`
+		DestPassword            string `json:"destPassword"`
+		DestKeyFile             string `json:"destKeyFile"`
+		DestAuthType            string `json:"destAuthType"`
+		DestBucket              string `json:"destBucket"`
+		DestRegion              string `json:"destRegion"`
+		DestAccessKey           string `json:"destAccessKey"`
+		DestSecretKey           string `json:"destSecretKey"`
+		DestEndpoint            string `json:"destEndpoint"`
+		DestShare               string `json:"destShare"`
+		DestDomain              string `json:"destDomain"`
+		DestPassiveMode         bool   `json:"destPassiveMode"`
+		DestClientId            string `json:"destClientId"`
+		DestClientSecret        string `json:"destClientSecret"`
+		DestDriveId             string `json:"destDriveId"`
+		DestTeamDrive           string `json:"destTeamDrive"`
+		DestReadOnly            bool   `json:"destReadOnly"`
+		DestStartYear           int    `json:"destStartYear"`
+		DestIncludeArchived     bool   `json:"destIncludeArchived"`
+		UseBuiltinAuthSource    bool   `json:"useBuiltinAuthSource"`
+		UseBuiltinAuthDest      bool   `json:"useBuiltinAuthDest"`
+		ArchivePath             string `json:"archivePath"`
+		ArchiveEnabled          bool   `json:"archiveEnabled"`
+		DeleteAfterTransfer     bool   `json:"deleteAfterTransfer"`
+		SkipProcessedFiles      bool   `json:"skipProcessedFiles"`
+		MaxConcurrentTransfers  int    `json:"maxConcurrentTransfers"`
+		RcloneFlags             string `json:"rcloneFlags"`
+		CommandId               uint   `json:"commandId"`
+		CommandFlags            string `json:"commandFlags"`
+		SourcePathValid         *bool  `json:"sourcePathValid"`
+		SourcePathError         string `json:"sourcePathError"`
+		DestPathValid           *bool  `json:"destPathValid"`
+		DestPathError           string `json:"destPathError"`
+		RequiresDestination     bool   `json:"requiresDestination"`
+	}
 
-		// Path validation states
-		sourcePathValid: null,
-		sourcePathError: '',
-		destPathValid: null,
-		destPathError: '',
-		
-		// Command configuration
-		requiresDestination: true,
+	data := initialData{
+		Name:                   name,
+		SourceType:             sourceType,
+		SourcePath:             sourcePath,
+		SourceHost:             sourceHost,
+		SourcePort:             sourcePort,
+		SourceUser:             sourceUser,
+		SourcePassword:         sourcePassword,
+		SourceKeyFile:          sourceKeyFile,
+		SourceAuthType:         sourceAuthType,
+		SourceBucket:           sourceBucket,
+		SourceRegion:           sourceRegion,
+		SourceAccessKey:        sourceAccessKey,
+		SourceSecretKey:        sourceSecretKey,
+		SourceEndpoint:         sourceEndpoint,
+		SourceShare:            sourceShare,
+		SourceDomain:           sourceDomain,
+		SourcePassiveMode:      sourcePassiveMode,
+		SourceClientId:         sourceClientId,
+		SourceClientSecret:     sourceClientSecret,
+		SourceDriveId:          sourceDriveId,
+		SourceTeamDrive:        sourceTeamDrive,
+		SourceReadOnly:         sourceReadOnly,
+		SourceStartYear:        sourceStartYear,
+		SourceIncludeArchived:  sourceIncludeArchived,
+		FilePattern:            filePattern,
+		OutputPattern:          outputPattern,
+		DestinationType:        destinationType,
+		DestinationPath:        destinationPath,
+		DestHost:               destHost,
+		DestPort:               destPort,
+		DestUser:               destUser,
+		DestPassword:           destPassword,
+		DestKeyFile:            destKeyFile,
+		DestAuthType:           destAuthType,
+		DestBucket:             destBucket,
+		DestRegion:             destRegion,
+		DestAccessKey:          destAccessKey,
+		DestSecretKey:          destSecretKey,
+		DestEndpoint:           destEndpoint,
+		DestShare:              destShare,
+		DestDomain:             destDomain,
+		DestPassiveMode:        destPassiveMode,
+		DestClientId:           destClientId,
+		DestClientSecret:       destClientSecret,
+		DestDriveId:            destDriveId,
+		DestTeamDrive:          destTeamDrive,
+		DestReadOnly:           destReadOnly,
+		DestStartYear:          destStartYear,
+		DestIncludeArchived:    destIncludeArchived,
+		UseBuiltinAuthSource:   useBuiltinAuthSource,
+		UseBuiltinAuthDest:     useBuiltinAuthDest,
+		ArchivePath:            archivePath,
+		ArchiveEnabled:         archiveEnabled,
+		DeleteAfterTransfer:    deleteAfterTransfer,
+		SkipProcessedFiles:     skipProcessedFiles,
+		MaxConcurrentTransfers: maxConcurrentTransfers,
+		RcloneFlags:            rcloneFlags,
+		CommandId:              commandId,
+		CommandFlags:           commandFlags,
+		SourcePathValid:        nil,
+		SourcePathError:        "",
+		DestPathValid:          nil,
+		DestPathError:          "",
+		RequiresDestination:    true,
+	}
 
-		// Methods for path validation
+	jsonBytes, err := json.Marshal(data)
+	if err != nil {
+		// Fallback to empty object if marshaling fails
+		return "{}"
+	}
+	
+	// Return JavaScript that merges JSON data with methods (methods are safe, don't contain user data)
+	return "Object.assign(" + string(jsonBytes) + `, {
 		checkPath(path, type) {
 			if (!path) {
 				this[type + 'PathValid'] = false;
@@ -280,20 +348,15 @@ func getInitialData(config *db.TransferConfig) string {
 				});
 		},
 		
-		// Method to check if destination is required based on command type
 		updateCommandRequirements() {
-			// List of commands that don't require destination
 			const listingCommands = ['ls', 'lsd', 'lsl', 'lsf', 'lsjson', 'listremotes'];
 			const infoCommands = ['md5sum', 'sha1sum', 'size', 'version'];
 			const dirCommands = ['mkdir', 'rmdir', 'rmdirs'];
 			const destructiveCommands = ['delete', 'purge'];
 			const specialSinglePathCommands = ['obscure'];
 			
-			// Get the command name from the command ID
-			// This will need coordination with your backend to ensure the IDs match the commands
 			let commandName = '';
 			switch(parseInt(this.commandId)) {
-				// Correct mapping based on internal/db/migrations/009_add_rclone_tables.go
 				case 1: commandName = 'copy'; break;
 				case 2: commandName = 'sync'; break;
 				case 3: commandName = 'bisync'; break;
@@ -320,12 +383,11 @@ func getInitialData(config *db.TransferConfig) string {
 				case 24: commandName = 'listremotes'; break;
 				case 25: commandName = 'obscure'; break;
 				case 26: commandName = 'cryptcheck'; break;
-				default: commandName = 'copy'; // Default to copy if ID is unknown
+				default: commandName = 'copy';
 			}
 			
 			console.log('Command ID:', this.commandId, 'Command Name:', commandName);
 			
-			// Check if the command requires a destination
 			if (
 				listingCommands.includes(commandName) ||
 				infoCommands.includes(commandName) ||
@@ -342,19 +404,7 @@ func getInitialData(config *db.TransferConfig) string {
 				console.log('Destination required for command:', commandName);
 			}
 		}
-	}`, 
-	name, sourceType, sourcePath, sourceHost, sourcePort, sourceUser, sourcePassword, sourceKeyFile, sourceAuthType,
-	sourceBucket, sourceRegion, sourceAccessKey, sourceSecretKey, sourceEndpoint, sourceShare, sourceDomain, sourcePassiveMode,
-	sourceClientId, sourceClientSecret, sourceDriveId, sourceTeamDrive,
-	sourceReadOnly, sourceStartYear, sourceIncludeArchived,
-	filePattern, outputPattern,
-	destinationType, destinationPath, destHost, destPort, destUser, destPassword, destKeyFile, destAuthType,
-	destBucket, destRegion, destAccessKey, destSecretKey, destEndpoint, destShare, destDomain, destPassiveMode,
-	destClientId, destClientSecret, destDriveId, destTeamDrive,
-	destReadOnly, destStartYear, destIncludeArchived,
-	useBuiltinAuthSource, useBuiltinAuthDest,
-	archivePath, archiveEnabled, deleteAfterTransfer, skipProcessedFiles, maxConcurrentTransfers, rcloneFlags, 
-	commandId, commandFlags)
+	})`
 }
 
 templ ConfigForm(ctx context.Context, data ConfigFormData) {

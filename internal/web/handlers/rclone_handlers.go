@@ -9,8 +9,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/components/providers/common"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/components/providers/common"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // RcloneHandler contains handlers for rclone-related routes

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/robfig/cron/v3"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // --- Mock Implementations ---
@@ -300,13 +300,11 @@ func TestNewScheduler_LoadJobs(t *testing.T) {
 	if len(cronMock.addedJobs) != 2 {
 		t.Errorf("Expected 2 jobs to be added to cron, got %d", len(cronMock.addedJobs))
 	}
-	// Job 1 schedule is 5 fields, should be converted to 6 by ScheduleJob logic.
-	if _, ok := cronMock.addedJobs["0 * * * * *"]; !ok { // Check for 6-field version
-		t.Errorf("Expected Job 1 schedule '0 * * * * *' to be added, got map: %v", cronMock.addedJobs)
+	if _, ok := cronMock.addedJobs["* * * * *"]; !ok {
+		t.Errorf("Expected Job 1 schedule '* * * * *' to be added, got map: %v", cronMock.addedJobs)
 	}
-	// Job 2 schedule is 5 fields, should be converted to 6 by ScheduleJob logic.
-	if _, ok := cronMock.addedJobs["0 0 * * * *"]; !ok { // Check for 6-field version
-		t.Errorf("Expected Job 2 schedule '0 0 * * * *' to be added, got map: %v", cronMock.addedJobs)
+	if _, ok := cronMock.addedJobs["0 * * * *"]; !ok {
+		t.Errorf("Expected Job 2 schedule '0 * * * *' to be added, got map: %v", cronMock.addedJobs)
 	}
 	cronMock.mu.Unlock()
 
@@ -355,9 +353,8 @@ func TestScheduleJob_Success(t *testing.T) {
 	if len(comps.cron.addedJobs) != 1 {
 		t.Fatalf("Expected 1 job added to cron, got %d", len(comps.cron.addedJobs))
 	}
-	// Job schedule is 5 fields, should be converted to 6 by ScheduleJob logic.
-	if _, ok := comps.cron.addedJobs["0 10 * * * *"]; !ok { // Check for 6-field version
-		t.Errorf("Expected schedule '0 10 * * * *' to be added, got map: %v", comps.cron.addedJobs)
+	if _, ok := comps.cron.addedJobs["10 * * * *"]; !ok {
+		t.Errorf("Expected schedule '10 * * * *' to be added, got map: %v", comps.cron.addedJobs)
 	}
 	comps.cron.mu.Unlock()
 

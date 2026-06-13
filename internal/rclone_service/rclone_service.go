@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // --- Mockable os/exec ---

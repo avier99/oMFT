@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/components"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/components"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // HandleProfile handles the GET /profile route

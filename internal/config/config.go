@@ -49,7 +49,7 @@ func Load() (*Config, error) {
 			Username:    "user@example.com",
 			Password:    "your-password",
 			FromEmail:   "gomft@example.com",
-			FromName:    "GoMFT",
+			FromName:    "oMFT",
 			EnableTLS:   true,
 			RequireAuth: true,
 		},

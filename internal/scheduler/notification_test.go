@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 	"gorm.io/gorm"
 )
 
@@ -142,16 +142,16 @@ func createTestConfig(id uint) *db.TransferConfig {
 }
 
 func createTestNotificationService(id uint, name, svcType string, enabled bool, triggers []string, config map[string]string) db.NotificationService {
-	return db.NotificationService{
+	svc := db.NotificationService{
 		ID:            id,
 		Name:          name,
 		Type:          svcType,
-		IsEnabled:     enabled, // Corrected field name
 		EventTriggers: triggers,
 		Config:        config,
-		// Initialize other fields as needed for tests, e.g., RetryPolicy
-		RetryPolicy: "none",
+		RetryPolicy:   "none",
 	}
+	svc.SetIsEnabled(enabled)
+	return svc
 }
 
 // --- Tests ---
@@ -160,7 +160,7 @@ func TestSendJobWebhookNotification(t *testing.T) {
 	logger, logBuf := newTestLogger(LogLevelDebug)
 	defer logger.Close()
 	mockDB := &mockNotificationDB{} // Not used directly by this function, but Notifier needs it
-	notifier := NewNotifier(mockDB, logger)
+	notifier := NewNotifier(mockDB, logger, false)
 
 	var receivedPayload map[string]interface{}
 	var receivedHeaders http.Header
@@ -197,8 +197,8 @@ func TestSendJobWebhookNotification(t *testing.T) {
 	if receivedHeaders.Get("Content-Type") != "application/json" {
 		t.Errorf("Expected Content-Type 'application/json', got %q", receivedHeaders.Get("Content-Type"))
 	}
-	if receivedHeaders.Get("User-Agent") != "GoMFT-Webhook/1.0" {
-		t.Errorf("Expected User-Agent 'GoMFT-Webhook/1.0', got %q", receivedHeaders.Get("User-Agent"))
+	if receivedHeaders.Get("User-Agent") != "oMFT-Webhook/1.0" {
+		t.Errorf("Expected User-Agent 'oMFT-Webhook/1.0', got %q", receivedHeaders.Get("User-Agent"))
 	}
 	if receivedHeaders.Get("X-Custom-Header") != "CustomValue" {
 		t.Errorf("Expected X-Custom-Header 'CustomValue', got %q", receivedHeaders.Get("X-Custom-Header"))
@@ -249,7 +249,7 @@ func TestSendGlobalNotifications_Webhook(t *testing.T) {
 		if enabledOnly {
 			var enabledServices []db.NotificationService
 			for _, s := range allServices {
-				if s.IsEnabled { // Use IsEnabled field
+				if s.GetIsEnabled() {
 					enabledServices = append(enabledServices, s)
 				}
 			}
@@ -271,7 +271,7 @@ func TestSendGlobalNotifications_Webhook(t *testing.T) {
 		return nil
 	}
 
-	notifier := NewNotifier(mockDB, logger)
+	notifier := NewNotifier(mockDB, logger, false)
 
 	job := createTestJob(10, false, "", false, false) // Job-specific webhook disabled
 	history := createTestHistory(100, 10, "completed", "")

@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/components"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/components"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // HandleJobs handles the GET /jobs route
@@ -753,8 +753,18 @@ func (h *Handlers) HandleDuplicateJob(c *gin.Context) {
 		return
 	}
 
+	// Check if user owns this job
+	if originalJob.CreatedBy != userID {
+		isAdmin, exists := c.Get("isAdmin")
+		if !exists || isAdmin != true {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
+			return
+		}
+	}
+
 	// Create a new job as a copy of the original
 	newJob := originalJob
+	newJob.CreatedBy = userID
 	newJob.ID = 0 // Reset ID to create a new record
 	newJob.Name = originalJob.Name + " - Copy"
 	newJob.CreatedAt = time.Now()

@@ -7,7 +7,7 @@ import (
 
 	// Needed for Job.NextRun update
 	"github.com/robfig/cron/v3"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // --- Interfaces for Dependencies ---
@@ -161,10 +161,12 @@ func (s *Scheduler) ScheduleJob(job *db.Job) error {
 		return nil
 	}
 
-	// Rely on the cron instance's AddFunc for validation based on its configuration (5 or 6 fields)
-	scheduleToUse := job.Schedule // Use the original schedule string
+	scheduleToUse := job.Schedule
+	if _, err := cron.ParseStandard(scheduleToUse); err != nil {
+		s.logger.LogError("Invalid cron expression for job %d: '%s': %v", jobID, scheduleToUse, err)
+		return fmt.Errorf("invalid cron expression '%s': %w", scheduleToUse, err)
+	}
 	s.logger.LogDebug("Using schedule '%s' for job %d", scheduleToUse, jobID)
-	// Schedule the job using the original schedule string. AddFunc will validate it.
 	entryID, err := s.cron.AddFunc(scheduleToUse, func() { // Calls interface method
 		s.executor.executeJob(jobID) // Calls interface method
 	})

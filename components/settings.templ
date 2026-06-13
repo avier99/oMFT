@@ -45,7 +45,7 @@ templ Settings(ctx context.Context, data SettingsData) {
 						Application Settings
 					</h1>
 					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-						Configure global settings for your GoMFT instance.
+						Configure global settings for your oMFT instance.
 					</p>
 				</div>
 				<!-- Success Message -->
@@ -208,7 +208,7 @@ templ Settings(ctx context.Context, data SettingsData) {
 									<div class="mb-6">
 										<label for="secret_key" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Secret Key (for signature verification)</label>
 										<input type="text" id="secret_key" name="secret_key" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Optional signature verification key"/>
-										<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">If provided, all webhooks will include an X-GoMFT-Signature header</p>
+										<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">If provided, all webhooks will include an X-oMFT-Signature header</p>
 									</div>
 									<div class="mb-6">
 										<label for="retry_policy" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Retry Policy</label>
@@ -402,7 +402,7 @@ templ Settings(ctx context.Context, data SettingsData) {
 							<div class="grid gap-6 mb-6 md:grid-cols-2">
 								<div>
 									<label for="app_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Application Name</label>
-									<input type="text" id="app_name" name="app_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="GoMFT"/>
+									<input type="text" id="app_name" name="app_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="oMFT"/>
 								</div>
 								<div>
 									<label for="base_url" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Base URL</label>

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/glebarez/sqlite"
-	"github.com/starfleetcptn/gomft/internal/db/migrations"
+	"github.com/avier99/oMFT/internal/db/migrations"
 	"gorm.io/gorm"
 )
 

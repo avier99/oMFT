@@ -71,8 +71,8 @@ RUN templ generate
 
 # Compile the application with version information
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build \
-    -ldflags "-X github.com/starfleetcptn/gomft/components.AppVersion=${VERSION} -X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.Commit=${COMMIT} -X github.com/starfleetcptn/gomft/components.BuildTime=${BUILD_TIME} -X github.com/starfleetcptn/gomft/components.Commit=${COMMIT}" \
-    -o /app/gomft
+    -ldflags "-X github.com/avier99/oMFT/components.AppVersion=${VERSION} -X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.Commit=${COMMIT} -X github.com/avier99/oMFT/components.BuildTime=${BUILD_TIME} -X github.com/avier99/oMFT/components.Commit=${COMMIT}" \
+    -o /app/omft
 
 # Install rclone with appropriate architecture
 RUN apk add --no-cache curl unzip && \
@@ -97,7 +97,7 @@ FROM alpine:3.19
 # Add arguments for UID and GID with defaults
 ARG UID=1000
 ARG GID=1000
-ARG USERNAME=gomft
+ARG USERNAME=omft
 ARG TARGETOS
 ARG TARGETARCH
 
@@ -113,7 +113,7 @@ RUN addgroup -g ${GID} ${USERNAME} && \
     adduser -D -u ${UID} -G ${USERNAME} -s /bin/sh ${USERNAME}
 
 # Copy the binary from the builder stage
-COPY --from=builder /app/gomft /app/
+COPY --from=builder /app/omft /app/
 COPY --from=builder /usr/local/bin/rclone /usr/local/bin/rclone
 
 # Copy components
@@ -130,7 +130,7 @@ RUN mkdir -p /app/data /app/backups
 RUN touch /app/.env && chmod 644 /app/.env && chown ${USERNAME}:${USERNAME} /app/.env
 
 # Set executable permissions
-RUN chmod +x /app/gomft
+RUN chmod +x /app/omft
 
 # Set ownership of application files
 RUN chown -R ${USERNAME}:${USERNAME} /app
@@ -142,4 +142,4 @@ EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Run the application
-CMD ["/app/gomft"] 
+CMD ["/app/omft"] 

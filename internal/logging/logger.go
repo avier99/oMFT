@@ -10,7 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/starfleetcptn/gomft/internal/web"
+	"github.com/avier99/oMFT/internal/web"
 )
 
 var (

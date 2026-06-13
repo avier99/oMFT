@@ -1,7 +1,7 @@
 package scheduler
 
 import (
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // MockScheduler is a mock implementation of a scheduler for testing

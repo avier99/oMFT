@@ -3,7 +3,7 @@ package email
 import (
 	"fmt"
 
-	"github.com/starfleetcptn/gomft/internal/config"
+	"github.com/avier99/oMFT/internal/config"
 )
 
 // MockService implements the email Service for testing purposes

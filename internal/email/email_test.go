@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/starfleetcptn/gomft/internal/config"
+	"github.com/avier99/oMFT/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -21,7 +21,7 @@ func createTestConfig(enabled bool) *config.Config {
 			Username:    "user",
 			Password:    "password",
 			FromEmail:   "noreply@example.com",
-			FromName:    "GoMFT Test",
+			FromName:    "oMFT Test",
 			RequireAuth: true,
 			EnableTLS:   true,
 			ReplyTo:     "support@example.com",
@@ -42,7 +42,7 @@ func TestGeneratePasswordResetEmailHTML(t *testing.T) {
 
 	testUsername := "testuser"
 	testResetLink := "http://localhost:8080/reset-password?token=testtoken123"
-	testAppName := "GoMFT"
+	testAppName := "oMFT"
 	testYear := time.Now().Year()
 
 	data := map[string]interface{}{
@@ -84,7 +84,7 @@ func TestGenerateTestEmailHTML(t *testing.T) {
 
 	testSubject := "My Test Subject"
 	testMessage := "This is the test message body."
-	testAppName := "GoMFT"
+	testAppName := "oMFT"
 	testYear := time.Now().Year()
 	testCurrentTime := time.Now().Format(time.RFC1123Z) // Use the same format
 

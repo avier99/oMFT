@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // --- Mock os/exec ---

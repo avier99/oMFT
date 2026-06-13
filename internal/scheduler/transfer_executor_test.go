@@ -11,7 +11,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/internal/db"
 	// Removed unused: encoding/json, path/filepath, reflect, time, gorm.io/gorm
 )
 

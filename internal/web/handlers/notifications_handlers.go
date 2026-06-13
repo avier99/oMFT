@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/components"
+	"github.com/avier99/oMFT/components"
 )
 
 // HandleNotifications displays all notifications for the current user

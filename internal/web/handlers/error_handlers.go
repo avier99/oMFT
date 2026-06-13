@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/components"
+	"github.com/avier99/oMFT/components"
 )
 
 // HandleNotFound handles 404 Not Found errors

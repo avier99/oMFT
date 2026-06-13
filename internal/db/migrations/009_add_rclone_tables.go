@@ -192,7 +192,7 @@ func populateRcloneTablesWithDefaults(tx *gorm.DB) error {
 	// Insert commands
 	for _, cmd := range commands {
 		err := tx.Exec(`
-			INSERT INTO rclone_commands 
+			INSERT OR IGNORE INTO rclone_commands 
 			(name, description, category, is_advanced, created_at) 
 			VALUES (?, ?, ?, ?, ?)
 		`, cmd.Name, cmd.Description, cmd.Category, cmd.IsAdvanced, time.Now()).Error
@@ -316,7 +316,7 @@ func populateRcloneTablesWithDefaults(tx *gorm.DB) error {
 			// Add global flag to each command
 			for _, cmdID := range commandIDs {
 				err = tx.Exec(`
-					INSERT INTO rclone_command_flags 
+					INSERT OR IGNORE INTO rclone_command_flags 
 					(command_id, name, short_name, description, data_type, is_required, default_value, created_at) 
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 				`, cmdID, flag.Name, flag.ShortName, flag.Description, flag.DataType, flag.IsRequired, flag.DefaultValue, time.Now()).Error
@@ -334,7 +334,7 @@ func populateRcloneTablesWithDefaults(tx *gorm.DB) error {
 			}
 
 			err = tx.Exec(`
-				INSERT INTO rclone_command_flags 
+				INSERT OR IGNORE INTO rclone_command_flags 
 				(command_id, name, short_name, description, data_type, is_required, default_value, created_at) 
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 			`, commandID, flag.Name, flag.ShortName, flag.Description, flag.DataType, flag.IsRequired, flag.DefaultValue, time.Now()).Error

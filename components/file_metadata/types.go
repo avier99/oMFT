@@ -1,6 +1,6 @@
 package file_metadata
 
-import "github.com/starfleetcptn/gomft/internal/db"
+import "github.com/avier99/oMFT/internal/db"
 
 // FileMetadataFilter represents filter parameters for file metadata queries
 type FileMetadataFilter struct {

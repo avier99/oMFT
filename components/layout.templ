@@ -6,17 +6,17 @@ import (
 	"strings"
 	"github.com/gin-gonic/gin"
 	"time"
-	"github.com/starfleetcptn/gomft/components/shared/toast"
+	"github.com/avier99/oMFT/components/shared/toast"
 )
 
 // AppVersion will be set at build time using ldflags
 // Example build command:
-// go build -ldflags "-X github.com/starfleetcptn/gomft/components.AppVersion=1.2.3"
+// go build -ldflags "-X github.com/avier99/oMFT/components.AppVersion=1.2.3"
 var AppVersion = "DEV"
 
 // GetReleaseURL returns the URL to the specific GitHub release
 func GetReleaseURL() templ.SafeURL {
-	return templ.SafeURL(fmt.Sprintf("https://github.com/starfleetcptn/gomft/releases/tag/%s", AppVersion))
+	return templ.SafeURL(fmt.Sprintf("https://github.com/avier99/oMFT/releases/tag/%s", AppVersion))
 }
 
 // CreateTemplateContext creates a new context with user information from Gin's context
@@ -54,7 +54,7 @@ templ LayoutWithContext(title string, ctx context.Context) {
 			<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png"/>
 			<link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png"/>
 			<link rel="manifest" href="/static/site.webmanifest"/>
-			<title>{ title } - GoMFT</title>
+			<title>{ title } - oMFT</title>
 			<!-- Font Awesome -->
 			<link rel="stylesheet" href="/static/dist/fontawesome/css/all.min.css"/>
 			<!-- Application assets -->
@@ -151,8 +151,8 @@ templ LayoutWithContext(title string, ctx context.Context) {
 						<div class="flex flex-col flex-grow pt-5 bg-white dark:bg-gray-800 overflow-y-auto border-r border-gray-200 dark:border-gray-700">
 							<div class="flex items-center flex-shrink-0 px-4">
 								<a href="/" class="flex items-center text-xl font-bold text-primary-600 dark:text-primary-400">
-									<img src="/static/img/logo.png" alt="GoMFT" class="w-8 h-8 mr-2">
-									GoMFT
+									<img src="/static/img/logo.png" alt="oMFT" class="w-8 h-8 mr-2">
+									oMFT
 								</a>
 							</div>
 							<nav class="flex-1 px-2 py-4 bg-white dark:bg-gray-800">
@@ -250,8 +250,8 @@ templ LayoutWithContext(title string, ctx context.Context) {
 					<div id="mobile-menu" class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white w-64 dark:bg-gray-800" tabindex="-1">
 						<div class="flex items-center justify-between">
 							<a href="/" class="flex items-center text-xl font-bold text-primary-600 dark:text-primary-400">
-								<!-- GoMFT Logo -->
-								<img src="/static/img/logo.png" alt="GoMFT" class="w-8 h-8 mr-2">
+								<!-- oMFT Logo -->
+								<img src="/static/img/logo.png" alt="oMFT" class="w-8 h-8 mr-2">
 							</a>
 							<button type="button" data-drawer-hide="mobile-menu" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
 								<i class="fas fa-times"></i>
@@ -470,9 +470,9 @@ templ LayoutWithContext(title string, ctx context.Context) {
 						<footer class="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
 							<div class="max-w-screen-2xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
 								<div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-									<span>GoMFT &copy; { getCurrentYear() }</span>
+									<span>oMFT &copy; { getCurrentYear() }</span>
 									<div class="flex items-center space-x-4">
-										<a href="https://github.com/starfleetcptn/gomft" class="hover:text-primary-600 dark:hover:text-primary-400">
+										<a href="https://github.com/avier99/oMFT" class="hover:text-primary-600 dark:hover:text-primary-400">
 											<i class="fab fa-github"></i>
 										</a>
 										<a href="https://discord.gg/f9dwtM3j" class="hover:text-primary-600 dark:hover:text-primary-400" target="_blank">
@@ -496,9 +496,9 @@ templ LayoutWithContext(title string, ctx context.Context) {
 					<footer class="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
 						<div class="max-w-screen-2xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
 							<div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-								<span>GoMFT &copy; { getCurrentYear() }</span>
+								<span>oMFT &copy; { getCurrentYear() }</span>
 								<div class="flex items-center space-x-4">
-									<a href="https://github.com/starfleetcptn/gomft" class="hover:text-primary-600 dark:hover:text-primary-400">
+									<a href="https://github.com/avier99/oMFT" class="hover:text-primary-600 dark:hover:text-primary-400">
 										<i class="fab fa-github"></i>
 									</a>
 									<a href="https://discord.gg/f9dwtM3j" class="hover:text-primary-600 dark:hover:text-primary-400" target="_blank">

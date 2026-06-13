@@ -6,12 +6,12 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/components"
-	"github.com/starfleetcptn/gomft/components/file_metadata"
-	"github.com/starfleetcptn/gomft/components/file_metadata/details"
-	"github.com/starfleetcptn/gomft/components/file_metadata/list"
-	"github.com/starfleetcptn/gomft/components/file_metadata/search"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/components"
+	"github.com/avier99/oMFT/components/file_metadata"
+	"github.com/avier99/oMFT/components/file_metadata/details"
+	"github.com/avier99/oMFT/components/file_metadata/list"
+	"github.com/avier99/oMFT/components/file_metadata/search"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // FileMetadataHandler handles displaying and searching file metadata

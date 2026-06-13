@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/starfleetcptn/gomft/components"
-	"github.com/starfleetcptn/gomft/internal/db"
-	"github.com/starfleetcptn/gomft/internal/email"
-	"github.com/starfleetcptn/gomft/internal/scheduler"
+	"github.com/avier99/oMFT/components"
+	"github.com/avier99/oMFT/internal/db"
+	"github.com/avier99/oMFT/internal/email"
+	"github.com/avier99/oMFT/internal/scheduler"
 )
 
 // WebSocketClients maintains the set of active WebSocket clients

@@ -8,11 +8,11 @@ import (
 	"time"
 
 	"github.com/glebarez/sqlite"
-	"github.com/starfleetcptn/gomft/internal/auth"
-	"github.com/starfleetcptn/gomft/internal/config"
-	"github.com/starfleetcptn/gomft/internal/db"
-	"github.com/starfleetcptn/gomft/internal/email"
-	"github.com/starfleetcptn/gomft/internal/scheduler"
+	"github.com/avier99/oMFT/internal/auth"
+	"github.com/avier99/oMFT/internal/config"
+	"github.com/avier99/oMFT/internal/db"
+	"github.com/avier99/oMFT/internal/email"
+	"github.com/avier99/oMFT/internal/scheduler"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

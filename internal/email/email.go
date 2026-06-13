@@ -7,7 +7,7 @@ import (
 	"net/smtp"
 	"time"
 
-	"github.com/starfleetcptn/gomft/internal/config"
+	"github.com/avier99/oMFT/internal/config"
 )
 
 // Service represents the email sending service
@@ -36,13 +36,13 @@ func (s *Service) SendPasswordResetEmail(toEmail, username, resetToken string) e
 	data := map[string]interface{}{
 		"Username":     username,
 		"ResetLink":    resetLink,
-		"AppName":      "GoMFT",
+		"AppName":      "oMFT",
 		"Year":         time.Now().Year(),
 		"ExpiresHours": 0.25, // Token expiration time in hours (15 minutes = 0.25 hours)
 	}
 
 	// Generate email content
-	subject := "Password Reset Request - GoMFT"
+	subject := "Password Reset Request - oMFT"
 	htmlContent, err := s.generatePasswordResetEmailHTML(data)
 	if err != nil {
 		return err
@@ -279,19 +279,19 @@ func (s *Service) SendTestEmail(toEmail, subject, message string) error {
 
 	// Use default subject if not provided
 	if subject == "" {
-		subject = "Test Email from GoMFT"
+		subject = "Test Email from oMFT"
 	}
 
 	// Use default message if not provided
 	if message == "" {
-		message = "This is a test email from GoMFT to verify the email configuration is working correctly."
+		message = "This is a test email from oMFT to verify the email configuration is working correctly."
 	}
 
 	// Create email data for template
 	data := map[string]interface{}{
 		"Subject":     subject,
 		"Message":     message,
-		"AppName":     "GoMFT",
+		"AppName":     "oMFT",
 		"Year":        time.Now().Year(),
 		"SMTPServer":  s.Config.Email.Host,
 		"SMTPPort":    s.Config.Email.Port,
@@ -428,7 +428,7 @@ func (s *Service) generateTestEmailHTML(data map[string]interface{}) (string, er
             </div>
             
             <div class="note">
-                <p>This is a test email sent from the GoMFT admin interface. If you've received this email, your email configuration is working correctly.</p>
+                <p>This is a test email sent from the oMFT admin interface. If you've received this email, your email configuration is working correctly.</p>
             </div>
         </div>
         <div class="footer">

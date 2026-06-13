@@ -16,11 +16,11 @@ import (
 	"crypto/sha256"
 
 	"github.com/gin-gonic/gin"
-	"github.com/starfleetcptn/gomft/components"
-	"github.com/starfleetcptn/gomft/components/notifications/form"
-	"github.com/starfleetcptn/gomft/components/notifications/list"
-	"github.com/starfleetcptn/gomft/components/notifications/types"
-	"github.com/starfleetcptn/gomft/internal/db"
+	"github.com/avier99/oMFT/components"
+	"github.com/avier99/oMFT/components/notifications/form"
+	"github.com/avier99/oMFT/components/notifications/list"
+	"github.com/avier99/oMFT/components/notifications/types"
+	"github.com/avier99/oMFT/internal/db"
 )
 
 // HandleSettings handles GET /settings
@@ -181,8 +181,8 @@ func (h *Handlers) HandleCreateNotificationService(c *gin.Context) {
 		// Create the notification data
 		ntfyData := map[string]interface{}{
 			"topic":   config["topic"],
-			"title":   "GoMFT Test Notification",
-			"message": "This is a test notification from GoMFT",
+			"title":   "oMFT Test Notification",
+			"message": "This is a test notification from oMFT",
 		}
 
 		// Add priority if provided
@@ -577,7 +577,7 @@ func (h *Handlers) HandleTestNotification(c *gin.Context) {
 		// Send a test webhook
 		// This is a simplified example - in a real implementation, you would want to use the templates
 		// and properly format the request based on the configured method, headers, etc.
-		resp, err := http.Post(config["webhook_url"], "application/json", bytes.NewBuffer([]byte(`{"message":"This is a test notification from GoMFT"}`)))
+		resp, err := http.Post(config["webhook_url"], "application/json", bytes.NewBuffer([]byte(`{"message":"This is a test notification from oMFT"}`)))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Failed to send test webhook: " + err.Error()})
 			return
@@ -605,8 +605,8 @@ func (h *Handlers) HandleTestNotification(c *gin.Context) {
 		pushURL := "https://api.pushbullet.com/v2/pushes"
 		pushData := map[string]interface{}{
 			"type":  "note",
-			"title": "GoMFT Test Notification",
-			"body":  "This is a test notification from GoMFT",
+			"title": "oMFT Test Notification",
+			"body":  "This is a test notification from oMFT",
 		}
 
 		// Add device identifier if provided
@@ -673,8 +673,8 @@ func (h *Handlers) HandleTestNotification(c *gin.Context) {
 		// Create the notification data
 		ntfyData := map[string]interface{}{
 			"topic":   config["topic"],
-			"title":   "GoMFT Test Notification",
-			"message": "This is a test notification from GoMFT",
+			"title":   "oMFT Test Notification",
+			"message": "This is a test notification from oMFT",
 		}
 
 		// Add priority if provided
@@ -758,7 +758,7 @@ func (h *Handlers) HandleTestNotification(c *gin.Context) {
 		gotifyURL := fmt.Sprintf("%s/message", strings.TrimRight(config["url"], "/"))
 
 		// Set default values for any missing fields
-		title := "GoMFT Test Notification"
+		title := "oMFT Test Notification"
 		if config["title"] != "" {
 			title = config["title"]
 		}
@@ -774,7 +774,7 @@ func (h *Handlers) HandleTestNotification(c *gin.Context) {
 		// Create the notification data
 		gotifyData := map[string]interface{}{
 			"title":    title,
-			"message":  "This is a test notification from GoMFT",
+			"message":  "This is a test notification from oMFT",
 			"priority": priority,
 		}
 
@@ -834,8 +834,8 @@ func (h *Handlers) HandleTestNotification(c *gin.Context) {
 		formData := url.Values{}
 		formData.Set("token", config["app_token"])
 		formData.Set("user", config["user_key"])
-		formData.Set("title", "GoMFT Test Notification")
-		formData.Set("message", "This is a test notification from GoMFT")
+		formData.Set("title", "oMFT Test Notification")
+		formData.Set("message", "This is a test notification from oMFT")
 
 		// Add optional fields if provided
 		if config["device"] != "" {
@@ -894,7 +894,7 @@ func replacePlaceholders(template string) string {
 		"{{job.transfer_bytes}}":   "1024",
 		"{{job.file_count}}":       "5",
 		"{{instance.id}}":          "gomft-instance-1",
-		"{{instance.name}}":        "GoMFT Test Instance",
+		"{{instance.name}}":        "oMFT Test Instance",
 		"{{instance.version}}":     "1.0.0",
 		"{{instance.environment}}": "testing",
 		"{{timestamp}}":            time.Now().Format(time.RFC3339),
@@ -1019,7 +1019,7 @@ func generateSamplePayload(template string) string {
 			},
 			"instance": {
 				"id": "gomft-instance-1",
-				"name": "GoMFT Test Instance",
+				"name": "oMFT Test Instance",
 				"version": "1.0.0",
 				"environment": "testing"
 			},
@@ -1045,7 +1045,7 @@ func generateSamplePayload(template string) string {
 		"{{job.transfer_bytes}}":   "1024",
 		"{{job.file_count}}":       "5",
 		"{{instance.id}}":          "gomft-instance-1",
-		"{{instance.name}}":        "GoMFT Test Instance",
+		"{{instance.name}}":        "oMFT Test Instance",
 		"{{instance.version}}":     "1.0.0",
 		"{{instance.environment}}": "testing",
 		"{{timestamp}}":            time.Now().Format(time.RFC3339),
@@ -1089,7 +1089,7 @@ func sendTestWebhook(config map[string]string, payload string, secretKey string)
 	// Add signature if secret key is provided
 	if secretKey != "" {
 		signature := calculateSignature(payload, secretKey)
-		req.Header.Set("X-GoMFT-Signature", signature)
+		req.Header.Set("X-oMFT-Signature", signature)
 	}
 
 	// Send the request

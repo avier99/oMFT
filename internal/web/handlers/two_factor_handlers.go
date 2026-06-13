@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/pquerna/otp/totp"
-	"github.com/starfleetcptn/gomft/components"
-	"github.com/starfleetcptn/gomft/internal/auth"
+	"github.com/avier99/oMFT/components"
+	"github.com/avier99/oMFT/internal/auth"
 	"golang.org/x/crypto/bcrypt"
 )
 

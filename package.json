@@ -1,7 +1,7 @@
 {
-  "name": "gomft",
+  "name": "omft",
   "version": "1.0.0",
-  "description": "GoMFT static assets bundling",
+  "description": "oMFT static assets bundling",
   "type": "module",
   "scripts": {
     "build": "node build.js",
