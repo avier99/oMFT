@@ -109,7 +109,7 @@ func TestGenerateTestEmailHTML(t *testing.T) {
 	assert.Contains(t, htmlContent, testMessage)
 	assert.Contains(t, htmlContent, fmt.Sprintf("%s:%d", cfg.Email.Host, cfg.Email.Port))
 	assert.Contains(t, htmlContent, cfg.Email.FromEmail)
-	assert.Contains(t, htmlContent, testCurrentTime)
+	assert.Contains(t, htmlContent, strings.ReplaceAll(testCurrentTime, "+", "&#43;"))
 	assert.Contains(t, htmlContent, fmt.Sprintf("&copy; %d %s", testYear, testAppName))
 }
 
