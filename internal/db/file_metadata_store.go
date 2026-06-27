@@ -7,6 +7,14 @@ func (db *DB) CreateFileMetadata(metadata *FileMetadata) error {
 	return db.Create(metadata).Error
 }
 
+// BatchCreateFileMetadata creates file metadata records in batches.
+func (db *DB) BatchCreateFileMetadata(records []*FileMetadata) error {
+	if len(records) == 0 {
+		return nil
+	}
+	return db.CreateInBatches(records, 100).Error
+}
+
 // GetFileMetadataByJobAndName retrieves file metadata by job ID and filename
 func (db *DB) GetFileMetadataByJobAndName(jobID uint, fileName string) (*FileMetadata, error) {
 	var metadata FileMetadata

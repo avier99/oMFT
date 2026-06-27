@@ -26,6 +26,7 @@ type mockTransferDB struct {
 	GetRcloneCommandFunc         func(id uint) (*db.RcloneCommand, error)
 	UpdateJobHistoryFunc         func(history *db.JobHistory) error
 	CreateFileMetadataFunc       func(metadata *db.FileMetadata) error
+	BatchCreateFileMetadataFunc  func(records []*db.FileMetadata) error
 	GetRcloneCommandFlagsMapFunc func(commandID uint) (map[uint]db.RcloneCommandFlag, error)
 
 	// Store calls/data for verification
@@ -69,6 +70,18 @@ func (m *mockTransferDB) CreateFileMetadata(metadata *db.FileMetadata) error {
 	}
 	metadata.ID = uint(len(m.createdMetadata)) // Assign a mock ID
 	return nil                                 // Default success
+}
+func (m *mockTransferDB) BatchCreateFileMetadata(records []*db.FileMetadata) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.createdMetadata = append(m.createdMetadata, records...)
+	if m.BatchCreateFileMetadataFunc != nil {
+		return m.BatchCreateFileMetadataFunc(records)
+	}
+	for i, metadata := range records {
+		metadata.ID = uint(len(m.createdMetadata) - len(records) + i + 1)
+	}
+	return nil
 }
 func (m *mockTransferDB) GetRcloneCommandFlagsMap(commandID uint) (map[uint]db.RcloneCommandFlag, error) {
 	if m.GetRcloneCommandFlagsMapFunc != nil {
@@ -185,11 +198,29 @@ func TestHelperProcess(t *testing.T) {
 	fmt.Fprint(os.Stdout, mockOutput)
 	fmt.Fprint(os.Stderr, mockStderr)
 
+	// Since rclone is invoked with --log-file, simulate it writing log content to the
+	// configured file path. This mirrors real behavior where stderr stays empty.
+	if logFilePath := os.Getenv("GO_TEST_HELPER_PROCESS_LOGFILE_PATH"); logFilePath != "" {
+		logContent := os.Getenv("GO_TEST_HELPER_PROCESS_LOGFILE_CONTENT")
+		_ = os.WriteFile(logFilePath, []byte(logContent), 0644)
+	}
+
 	// Exit with appropriate code
 	if wantError {
 		os.Exit(1)
 	}
 	os.Exit(0)
+}
+
+// extractLogFilePath returns the value of the --log-file argument from a set of
+// rclone arguments, or an empty string if not present.
+func extractLogFilePath(args []string) string {
+	for i, a := range args {
+		if a == "--log-file" && i+1 < len(args) {
+			return args[i+1]
+		}
+	}
+	return ""
 }
 
 // --- Test Setup ---
@@ -301,7 +332,8 @@ func TestExecuteSimpleCommand_Failure(t *testing.T) {
 	configPath := "/tmp/test_rclone.conf"
 	cmdName := "copy"
 	cmdType := "transfer"
-	expectedStderr := "Some rclone error"
+	// rclone writes errors to the --log-file (not stderr) as ERROR:/CRITICAL: lines.
+	expectedLogError := "2024/01/01 12:00:00 ERROR : file.txt: Failed to copy: connection refused"
 
 	// Mock exec.CommandContext using the TestHelperProcess strategy for failure
 	restoreExec := MockExecCommand(func(ctx context.Context, command string, args ...string) *exec.Cmd {
@@ -309,14 +341,13 @@ func TestExecuteSimpleCommand_Failure(t *testing.T) {
 		cmd := exec.CommandContext(ctx, os.Args[0], cs...)
 		cmd.Env = []string{
 			"GO_TEST_HELPER_PROCESS=1",
-			fmt.Sprintf("GO_TEST_HELPER_PROCESS_STDERR=%s", expectedStderr),
 			"GO_TEST_HELPER_PROCESS_WANT_ERROR=1", // Indicate failure
+			fmt.Sprintf("GO_TEST_HELPER_PROCESS_LOGFILE_PATH=%s", extractLogFilePath(args)),
+			fmt.Sprintf("GO_TEST_HELPER_PROCESS_LOGFILE_CONTENT=%s", expectedLogError),
 		}
 		return cmd
 	})
 	defer restoreExec()
-
-	// TODO: Refactor TransferExecutor to use execCommandContext instead of exec.Command
 
 	comps.executor.executeSimpleCommand(cmdName, cmdType, job, config, history, configPath)
 
@@ -328,9 +359,9 @@ func TestExecuteSimpleCommand_Failure(t *testing.T) {
 	if comps.db.updatedHistory.Status != "failed" {
 		t.Errorf("Expected history status 'failed', got %q", comps.db.updatedHistory.Status)
 	}
-	// The error message should contain the stderr output captured by CombinedOutput
-	if !strings.Contains(comps.db.updatedHistory.ErrorMessage, "Command Error:") || !strings.Contains(comps.db.updatedHistory.ErrorMessage, expectedStderr) {
-		t.Errorf("Expected history ErrorMessage to contain 'Command Error:' and stderr %q, got %q", expectedStderr, comps.db.updatedHistory.ErrorMessage)
+	// The error message should contain the ERROR line parsed from the log file.
+	if !strings.Contains(comps.db.updatedHistory.ErrorMessage, "Command Error:") || !strings.Contains(comps.db.updatedHistory.ErrorMessage, expectedLogError) {
+		t.Errorf("Expected history ErrorMessage to contain 'Command Error:' and log error %q, got %q", expectedLogError, comps.db.updatedHistory.ErrorMessage)
 	}
 	comps.db.mu.Unlock()
 
@@ -344,8 +375,60 @@ func TestExecuteSimpleCommand_Failure(t *testing.T) {
 	if !strings.Contains(logOutput, "Error executing command 'copy'") {
 		t.Errorf("Expected error log message, but got:\n%s", logOutput)
 	}
-	if !strings.Contains(logOutput, expectedStderr) {
-		t.Errorf("Expected stderr %q in log output, but got:\n%s", expectedStderr, logOutput)
+}
+
+func TestExecuteSimpleCommand_CompletedWithWarnings(t *testing.T) {
+	comps := setupTestExecutor()
+	defer comps.logger.Close()
+
+	job := db.Job{ID: 3, Name: "Warn Job"}
+	config := db.TransferConfig{ID: 30, SourceType: "local", SourcePath: "/src", DestinationType: "local", DestinationPath: "/dst"}
+	history := &db.JobHistory{ID: 300, JobID: 3, ConfigID: 30}
+	configPath := "/tmp/test_rclone.conf"
+	cmdName := "copy"
+	cmdType := "transfer"
+
+	// rclone emitted final stats (so the transfer succeeded) but exited non-zero with
+	// a non-critical ERROR line -> completed_with_warnings, and stats should be parsed.
+	logContent := strings.Join([]string{
+		"2024/01/01 12:00:00 ERROR : skipped.txt: error reading source: permission denied",
+		"2024/01/01 12:00:01 NOTICE: Transferred:   113.000 GiB / 113.000 GiB, 100%, 15 MiB/s, ETA 0s",
+		"2024/01/01 12:00:01 NOTICE: Checks:                 2 / 2, 100%",
+		"2024/01/01 12:00:01 NOTICE: Transferred:         254319 / 254319, 100%",
+	}, "\n")
+
+	restoreExec := MockExecCommand(func(ctx context.Context, command string, args ...string) *exec.Cmd {
+		cs := []string{"-test.run=TestHelperProcess", "--"}
+		cmd := exec.CommandContext(ctx, os.Args[0], cs...)
+		cmd.Env = []string{
+			"GO_TEST_HELPER_PROCESS=1",
+			"GO_TEST_HELPER_PROCESS_WANT_ERROR=1", // Non-zero exit despite producing stats
+			fmt.Sprintf("GO_TEST_HELPER_PROCESS_LOGFILE_PATH=%s", extractLogFilePath(args)),
+			fmt.Sprintf("GO_TEST_HELPER_PROCESS_LOGFILE_CONTENT=%s", logContent),
+		}
+		return cmd
+	})
+	defer restoreExec()
+
+	comps.executor.executeSimpleCommand(cmdName, cmdType, job, config, history, configPath)
+
+	comps.db.mu.Lock()
+	defer comps.db.mu.Unlock()
+	if comps.db.updatedHistory == nil {
+		t.Fatal("Expected UpdateJobHistory to be called, but it wasn't")
+	}
+	if comps.db.updatedHistory.Status != "completed_with_warnings" {
+		t.Errorf("Expected history status 'completed_with_warnings', got %q", comps.db.updatedHistory.Status)
+	}
+	if comps.db.updatedHistory.FilesTransferred != 254319 {
+		t.Errorf("Expected FilesTransferred 254319, got %d", comps.db.updatedHistory.FilesTransferred)
+	}
+	expectedBytes := int64(113.000 * (1 << 30))
+	if comps.db.updatedHistory.BytesTransferred != expectedBytes {
+		t.Errorf("Expected BytesTransferred %d, got %d", expectedBytes, comps.db.updatedHistory.BytesTransferred)
+	}
+	if !strings.Contains(comps.db.updatedHistory.ErrorMessage, "permission denied") {
+		t.Errorf("Expected warning details in ErrorMessage, got %q", comps.db.updatedHistory.ErrorMessage)
 	}
 }
 

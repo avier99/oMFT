@@ -56,7 +56,7 @@ func (h *Handlers) HandleDashboard(c *gin.Context) {
 	h.DB.Model(&db.JobHistory{}).Where("job_histories.status = 'running' AND job_histories.end_time IS NULL").Count(&totalJobs)
 
 	var completedJobs int64
-	h.DB.Model(&db.JobHistory{}).Where("status = ? AND start_time >= ?", "completed", time.Now().AddDate(0, 0, -1)).Count(&completedJobs)
+	h.DB.Model(&db.JobHistory{}).Where("status IN ? AND start_time >= ?", []string{"completed", "completed_with_warnings"}, time.Now().AddDate(0, 0, -1)).Count(&completedJobs)
 
 	var failedJobs int64
 	h.DB.Model(&db.JobHistory{}).Where("status = ?", "failed").Count(&failedJobs)

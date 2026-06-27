@@ -51,7 +51,7 @@ func (n *Notifier) SendNotifications(job *db.Job, history *db.JobHistory, config
 	// First, handle job-specific webhook if configured
 	if job.GetWebhookEnabled() && job.WebhookURL != "" {
 		// Skip notifications based on settings
-		if history.Status == "completed" && !job.GetNotifyOnSuccess() {
+		if (history.Status == "completed" || history.Status == "completed_with_warnings") && !job.GetNotifyOnSuccess() {
 			n.logger.LogDebug("Skipping success notification for job %d (notifyOnSuccess=false)", job.ID)
 		} else if history.Status == "failed" && !job.GetNotifyOnFailure() {
 			n.logger.LogDebug("Skipping failure notification for job %d (notifyOnFailure=false)", job.ID)
@@ -185,7 +185,7 @@ func (n *Notifier) sendGlobalNotifications(job *db.Job, history *db.JobHistory, 
 	switch history.Status {
 	case "running":
 		eventType = "job_start"
-	case "completed", "completed_with_errors":
+	case "completed", "completed_with_errors", "completed_with_warnings":
 		eventType = "job_complete"
 	case "failed":
 		eventType = "job_error"
@@ -676,7 +676,7 @@ func (n *Notifier) updateJobStatus(jobID uint, status string, startTime, endTime
 		notificationType = db.NotificationJobStart
 		title = "Job Started"
 		notificationMessage = jobTitle
-	case "completed":
+	case "completed", "completed_with_warnings":
 		notificationType = db.NotificationJobComplete
 		title = "Job Complete"
 		notificationMessage = jobTitle
@@ -764,7 +764,7 @@ func (n *Notifier) createJobNotification(job *db.Job, history *db.JobHistory) er
 		notificationType = db.NotificationJobStart
 		title = "Job Started"
 		message = jobTitle
-	case "completed":
+	case "completed", "completed_with_warnings":
 		notificationType = db.NotificationJobComplete
 		title = "Job Complete"
 		message = jobTitle

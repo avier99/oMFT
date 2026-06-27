@@ -25,6 +25,7 @@ type TransferDB interface {
 	GetRcloneCommand(id uint) (*db.RcloneCommand, error)
 	UpdateJobHistory(history *db.JobHistory) error
 	CreateFileMetadata(metadata *db.FileMetadata) error
+	BatchCreateFileMetadata(records []*db.FileMetadata) error
 	GetRcloneCommandFlagsMap(commandID uint) (map[uint]db.RcloneCommandFlag, error)
 }
 
@@ -240,6 +241,7 @@ func (te *TransferExecutor) executeConfigTransfer(job db.Job, config db.Transfer
 	}
 
 	var transferErrors []string
+	var metadataRecords []*db.FileMetadata
 	filesTransferred := 0
 
 	// Use mutex for thread-safe access to shared variables
@@ -563,7 +565,7 @@ func (te *TransferExecutor) executeConfigTransfer(job db.Job, config db.Transfer
 				}
 			}
 
-			// Create and save file metadata
+			// Create file metadata and defer persistence until all workers complete.
 			metadata := &db.FileMetadata{
 				JobID:           job.ID,
 				ConfigID:        config.ID,
@@ -579,11 +581,10 @@ func (te *TransferExecutor) executeConfigTransfer(job db.Job, config db.Transfer
 				ErrorMessage:    fileErrorMsg,
 			}
 
-			if err := te.db.CreateFileMetadata(metadata); err != nil { // Calls interface method
-				te.logger.LogError("Error creating file metadata for %s: %v", currentFileName, err)
-			} else {
-				te.logger.LogDebug("Created file metadata record for %s (ID: %d) with hash: %s", currentFileName, metadata.ID, currentFileHash)
-			}
+			mutex.Lock()
+			metadataRecords = append(metadataRecords, metadata)
+			mutex.Unlock()
+			te.logger.LogDebug("Prepared file metadata record for %s with hash: %s", currentFileName, currentFileHash)
 		}()
 	}
 
@@ -592,6 +593,14 @@ func (te *TransferExecutor) executeConfigTransfer(job db.Job, config db.Transfer
 
 	// Clean up concurrency semaphore
 	close(concurrencySemaphore)
+
+	if len(metadataRecords) > 0 {
+		if err := te.db.BatchCreateFileMetadata(metadataRecords); err != nil {
+			te.logger.LogError("Error batch creating %d file metadata records: %v", len(metadataRecords), err)
+		} else {
+			te.logger.LogDebug("Batch created %d file metadata records", len(metadataRecords))
+		}
+	}
 
 	// Update job history with transfer results
 	history.FilesTransferred = filesTransferred
@@ -932,64 +941,108 @@ func (te *TransferExecutor) executeSimpleCommand(cmdName string, cmdType string,
 	history.EndTime = &time.Time{}
 	*history.EndTime = startTime.Add(duration)
 
-	// Check for pattern in stderr that indicates successful completion with warnings
-	// Some commands like sync may complete successfully but with warnings
-	successWithWarnings := strings.Contains(stderr.String(), "Transferred:") &&
-		strings.Contains(stderr.String(), "Errors:") &&
-		strings.Contains(stderr.String(), "Checks:")
+	// rclone is invoked with --log-file, so ALL output (logs AND final stats) is redirected
+	// to the log file, leaving cmd.Stderr empty. We therefore evaluate success/failure and
+	// parse statistics from logContent (read above) rather than from stderr.
+	logStr := string(logContent)
+
+	// A run that emitted final stats ("Transferred:" + "Checks:") is treated as successful
+	// even when rclone returns a non-zero exit code (e.g. individual files hit warnings).
+	successWithWarnings := strings.Contains(logStr, "Transferred:") &&
+		strings.Contains(logStr, "Checks:")
+
+	// CRITICAL errors always indicate a genuine failure that must surface as "failed",
+	// regardless of whether final stats were emitted.
+	hasCriticalError := strings.Contains(logStr, "CRITICAL:") ||
+		strings.Contains(logStr, "CRITICAL :")
+
+	// Collect ERROR/CRITICAL log lines so real rclone errors are visible in the UI
+	// (stderr is empty because of --log-file).
+	logLevelErrRegex := regexp.MustCompile(`\b(ERROR|CRITICAL)\s*:`)
+	var logErrorLines []string
+	for _, line := range strings.Split(logStr, "\n") {
+		trimmed := strings.TrimSpace(line)
+		if logLevelErrRegex.MatchString(trimmed) {
+			logErrorLines = append(logErrorLines, trimmed)
+		}
+	}
 
 	// Process results
-	if err != nil && !successWithWarnings {
+	if err != nil && (!successWithWarnings || hasCriticalError) {
 		te.logger.LogError("Error executing command '%s' for job %d, config %d: %v", cmdName, job.ID, config.ID, err)
-		te.logger.LogError("Command stderr: %s", stderr.String())
+		if len(logErrorLines) > 0 {
+			te.logger.LogError("Command log errors: %s", strings.Join(logErrorLines, "; "))
+		}
 
 		history.Status = "failed"
-		// Use stderr directly from the buffer as the error from Run() might not contain it
-		history.ErrorMessage = fmt.Sprintf("Command Error: %v\nStderr: %s", err, stderr.String())
+		if len(logErrorLines) > 0 {
+			history.ErrorMessage = fmt.Sprintf("Command Error: %v\n%s", err, strings.Join(logErrorLines, "\n"))
+		} else {
+			history.ErrorMessage = fmt.Sprintf("Command Error: %v", err)
+		}
 	} else {
-		te.logger.LogInfo("Successfully executed command '%s' for job %d, config %d (duration: %v)",
-			cmdName, job.ID, config.ID, duration)
+		if err != nil && successWithWarnings {
+			// Transfer produced final stats but exited non-zero: completed, but with warnings.
+			history.Status = "completed_with_warnings"
+			te.logger.LogInfo("Command '%s' completed with warnings for job %d, config %d (exit error: %v)",
+				cmdName, job.ID, config.ID, err)
+			if len(logErrorLines) > 0 {
+				history.ErrorMessage = fmt.Sprintf("Completed with warnings:\n%s", strings.Join(logErrorLines, "\n"))
+			}
+		} else {
+			te.logger.LogInfo("Successfully executed command '%s' for job %d, config %d (duration: %v)",
+				cmdName, job.ID, config.ID, duration)
+		}
 
 		// Handle different command output types
 		if cmdType == "listing" {
 			// For listing commands, count the number of lines in the output as "files processed"
 			lines := strings.Count(stdout.String(), "\n")
 			history.FilesTransferred = lines
-			history.Status = "completed"
+			if history.Status != "completed_with_warnings" {
+				history.Status = "completed"
+			}
 		} else if cmdType == "transfer" {
-			// Try to extract transfer statistics from command output (stderr)
-			history.Status = "completed"
-
-			// Look for metrics in stderr which is where rclone puts stats
-			// Extract bytes transferred if available
-			bytesRegex := regexp.MustCompile(`Transferred:\s+(\d+)\s+/\s+(\d+)\s+Bytes`)
-			if matches := bytesRegex.FindStringSubmatch(stderr.String()); len(matches) >= 3 {
-				if bytesTransferred, err := strconv.ParseInt(matches[1], 10, 64); err == nil {
-					history.BytesTransferred = bytesTransferred
-				}
+			if history.Status != "completed_with_warnings" {
+				history.Status = "completed"
 			}
 
-			// Extract files transferred if available
-			filesRegex := regexp.MustCompile(`Transferred:\s+(\d+)\s+/\s+(\d+)\s+Files`)
-			if matches := filesRegex.FindStringSubmatch(stderr.String()); len(matches) >= 3 {
-				if filesTransferred, err := strconv.Atoi(matches[1]); err == nil {
+			// rclone's actual stats lines (written to the log) look like:
+			//   NOTICE: Transferred:   113.000 GiB / 113.000 GiB, 100%, 15 MiB/s, ETA 0s
+			//   NOTICE: Transferred:         254319 / 254319, 100%
+			// rclone emits these repeatedly during a run (mid-run flushes), so use the LAST
+			// match — the final summary — rather than the first.
+			filesRegex := regexp.MustCompile(`Transferred:\s+(\d+)\s+/\s+\d+,\s+\d+%`)
+			if allMatches := filesRegex.FindAllStringSubmatch(logStr, -1); len(allMatches) > 0 {
+				lastMatch := allMatches[len(allMatches)-1]
+				if filesTransferred, convErr := strconv.Atoi(lastMatch[1]); convErr == nil {
 					history.FilesTransferred = filesTransferred
 				}
 			}
 
-			// If stats weren't found in stderr OR the log parsing yielded a count, use the log count
-			// This prioritizes the count derived from actual file processing logs.
+			// Extract bytes transferred from the human-readable stats line (e.g. "113.000 GiB / ...").
+			// Again take the last match to capture the final cumulative total.
+			bytesRegex := regexp.MustCompile(`Transferred:\s+([\d.]+)\s+(B|KiB|MiB|GiB|TiB|PiB)\s+/`)
+			if allMatches := bytesRegex.FindAllStringSubmatch(logStr, -1); len(allMatches) > 0 {
+				lastMatch := allMatches[len(allMatches)-1]
+				if bytesTransferred, ok := parseHumanBytes(lastMatch[1], lastMatch[2]); ok {
+					history.BytesTransferred = bytesTransferred
+				}
+			}
+
+			// Prefer the count derived from actual per-file processing logs when available.
 			if filesProcessedFromLog > 0 {
 				history.FilesTransferred = filesProcessedFromLog
 				te.logger.LogDebug("Updated FilesTransferred count to %d based on log parsing", filesProcessedFromLog)
 			} else if history.FilesTransferred == 0 && logReadErr == nil {
-				// Fallback message if stats were 0 and log parsing also yielded 0 (or wasn't applicable)
-				te.logger.LogDebug("Could not determine FilesTransferred from stderr stats or log parsing.")
+				te.logger.LogDebug("Could not determine FilesTransferred from log stats or log parsing.")
 			}
 
 		} else {
 			// For other commands, we don't have file counts, but the command completed
-			history.Status = "completed"
+			if history.Status != "completed_with_warnings" {
+				history.Status = "completed"
+			}
 		}
 
 		// Store command output in the history for reference
@@ -1011,6 +1064,33 @@ func (te *TransferExecutor) executeSimpleCommand(cmdName string, cmdType string,
 
 	// Send notification
 	te.notifier.SendNotifications(&job, history, &config) // Calls interface method
+}
+
+// parseHumanBytes converts an rclone human-readable size (e.g. "113.000", "GiB") into
+// a byte count. Returns false if the value or unit cannot be parsed.
+func parseHumanBytes(value, unit string) (int64, bool) {
+	f, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return 0, false
+	}
+	var multiplier float64
+	switch unit {
+	case "B":
+		multiplier = 1
+	case "KiB":
+		multiplier = 1 << 10
+	case "MiB":
+		multiplier = 1 << 20
+	case "GiB":
+		multiplier = 1 << 30
+	case "TiB":
+		multiplier = 1 << 40
+	case "PiB":
+		multiplier = 1 << 50
+	default:
+		return 0, false
+	}
+	return int64(f * multiplier), true
 }
 
 // prepareBaseArguments prepares the base arguments for a command
@@ -1073,6 +1153,9 @@ func (te *TransferExecutor) prepareBaseArguments(command string, config *db.Tran
 	// Add common rclone options
 	args = append(args, "--progress")
 	args = append(args, "--stats", "1s")
+	args = append(args, "--retries", "10")
+	args = append(args, "--retries-sleep", "30s")
+	args = append(args, "--low-level-retries", "20")
 
 	// Add config file location
 	configPath := te.db.GetConfigRclonePath(config) // Calls interface method
