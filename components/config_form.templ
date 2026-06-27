@@ -3,6 +3,7 @@ package components
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"github.com/avier99/oMFT/internal/db"
 	"context"
 	"github.com/avier99/oMFT/components/providers/source"
@@ -13,10 +14,53 @@ import (
 type ConfigFormData struct {
 	Config *db.TransferConfig
 	IsNew  bool
+	Machines []db.Machine
 	// Fields for pre-rendering flags on edit
 	InitialCommand     *db.RcloneCommand
 	SelectedFlagsMap   map[uint]bool
 	SelectedFlagValues map[uint]string
+}
+
+type machineJSON struct {
+	ID        uint   `json:"id"`
+	Name      string `json:"name"`
+	Type      string `json:"type"`
+	Host      string `json:"host"`
+	Port      int    `json:"port"`
+	User      string `json:"user"`
+	Region    string `json:"region"`
+	AccessKey string `json:"accessKey"`
+	Endpoint  string `json:"endpoint"`
+	Domain    string `json:"domain"`
+	ClientId  string `json:"clientId"`
+	DriveId   string `json:"driveId"`
+	TeamDrive string `json:"teamDrive"`
+}
+
+func marshalMachinesJSON(machines []db.Machine) string {
+	items := make([]machineJSON, len(machines))
+	for i, m := range machines {
+		items[i] = machineJSON{
+			ID:        m.ID,
+			Name:      m.Name,
+			Type:      m.Type,
+			Host:      m.Host,
+			Port:      m.Port,
+			User:      m.User,
+			Region:    m.Region,
+			AccessKey: m.AccessKey,
+			Endpoint:  m.Endpoint,
+			Domain:    m.Domain,
+			ClientId:  m.ClientID,
+			DriveId:   m.DriveID,
+			TeamDrive: m.TeamDrive,
+		}
+	}
+	b, err := json.Marshal(items)
+	if err != nil {
+		return "[]"
+	}
+	return strings.ReplaceAll(string(b), "</script>", `<\/script>`)
 }
 
 func getConfigFormTitle(isNew bool) string {
@@ -92,6 +136,8 @@ func getInitialData(config *db.TransferConfig) string {
 	commandFlags := ""
 	useBuiltinAuthSource := true
 	useBuiltinAuthDest := true
+	sourceMachineId := uint(0)
+	destMachineId := uint(0)
 
 	// If editing an existing config, populate with those values
 	if config != nil {
@@ -184,6 +230,12 @@ func getInitialData(config *db.TransferConfig) string {
 		} else if destClientId != "" || destClientSecret != "" {
 			useBuiltinAuthDest = false
 		}
+		if config.SourceMachineID != nil {
+			sourceMachineId = *config.SourceMachineID
+		}
+		if config.DestMachineID != nil {
+			destMachineId = *config.DestMachineID
+		}
 	}
 
 	// Create a struct for JSON marshaling to prevent XSS
@@ -252,6 +304,8 @@ func getInitialData(config *db.TransferConfig) string {
 		DestPathValid           *bool  `json:"destPathValid"`
 		DestPathError           string `json:"destPathError"`
 		RequiresDestination     bool   `json:"requiresDestination"`
+		SourceMachineID         uint   `json:"sourceMachineId"`
+		DestMachineID           uint   `json:"destMachineId"`
 	}
 
 	data := initialData{
@@ -319,6 +373,8 @@ func getInitialData(config *db.TransferConfig) string {
 		DestPathValid:          nil,
 		DestPathError:          "",
 		RequiresDestination:    true,
+		SourceMachineID:        sourceMachineId,
+		DestMachineID:          destMachineId,
 	}
 
 	jsonBytes, err := json.Marshal(data)
@@ -403,8 +459,88 @@ func getInitialData(config *db.TransferConfig) string {
 				this.requiresDestination = true;
 				console.log('Destination required for command:', commandName);
 			}
+		},
+
+		selectMachine(side, machineId) {
+			const id = machineId ? parseInt(machineId) : 0;
+			const m = window.machinesData.find(m => m.id == id);
+			if (side === 'source') {
+				this.sourceMachineId = id;
+				if (!m) return;
+				this.sourceType      = m.type;
+				this.sourceHost      = m.host      || '';
+				this.sourcePort      = m.port      || 0;
+				this.sourceUser      = m.user      || '';
+				this.sourceRegion    = m.region    || '';
+				this.sourceAccessKey = m.accessKey || '';
+				this.sourceEndpoint  = m.endpoint  || '';
+				this.sourceDomain    = m.domain    || '';
+				this.sourceClientId  = m.clientId  || '';
+				this.sourceDriveId   = m.driveId   || '';
+				this.sourceTeamDrive = m.teamDrive || '';
+			} else {
+				this.destMachineId   = id;
+				if (!m) return;
+				this.destinationType = m.type;
+				this.destHost        = m.host      || '';
+				this.destPort        = m.port      || 0;
+				this.destUser        = m.user      || '';
+				this.destRegion      = m.region    || '';
+				this.destAccessKey   = m.accessKey || '';
+				this.destEndpoint    = m.endpoint  || '';
+				this.destDomain      = m.domain    || '';
+				this.destClientId    = m.clientId  || '';
+				this.destDriveId     = m.driveId   || '';
+				this.destTeamDrive   = m.teamDrive || '';
+			}
 		}
 	})`
+}
+
+templ machinesDataScript(machines []db.Machine) {
+	<script>window.machinesData = { marshalMachinesJSON(machines) };</script>
+}
+
+templ machinePicker(side string, machines []db.Machine, currentID *uint) {
+	<div class="mb-4">
+		<div class="flex items-center justify-between mb-2">
+			<label class="block text-sm font-medium text-gray-900 dark:text-white">
+				<i class="fas fa-server mr-1 text-gray-500 dark:text-gray-400"></i>
+				Machine <span class="text-gray-500 font-normal">(optional)</span>
+			</label>
+			<a href="/machines/new" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+				+ New Machine →
+			</a>
+		</div>
+		if side == "source" {
+			<select
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+				@change="selectMachine('source', $event.target.value)"
+			>
+				<option value="0" :selected="sourceMachineId == 0">None (manual entry)</option>
+				for _, m := range machines {
+					<option value={ fmt.Sprintf("%d", m.ID) } :selected={ fmt.Sprintf("sourceMachineId == %d", m.ID) }>{ m.Name } ({ m.Type })</option>
+				}
+			</select>
+		} else {
+			<select
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+				@change="selectMachine('dest', $event.target.value)"
+			>
+				<option value="0" :selected="destMachineId == 0">None (manual entry)</option>
+				for _, m := range machines {
+					<option value={ fmt.Sprintf("%d", m.ID) } :selected={ fmt.Sprintf("destMachineId == %d", m.ID) }>{ m.Name } ({ m.Type })</option>
+				}
+			</select>
+		}
+		if len(machines) == 0 {
+			<p class="mt-2 text-sm">
+				<a href="/machines/new" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+					No machines yet — Create your first machine →
+				</a>
+			</p>
+		}
+	</div>
 }
 
 templ ConfigForm(ctx context.Context, data ConfigFormData) {
@@ -427,6 +563,8 @@ templ ConfigForm(ctx context.Context, data ConfigFormData) {
 							Configure your file transfer settings using the form below
 						</p>
 					</div>
+
+					@machinesDataScript(data.Machines)
 
 					<!-- Main Form -->
 					<form 
@@ -534,6 +672,9 @@ templ ConfigForm(ctx context.Context, data ConfigFormData) {
 							/>
 							<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Choose a descriptive name to identify this configuration.</p>
 						</div>
+
+						<input type="hidden" name="source_machine_id" :value="sourceMachineId"/>
+						<input type="hidden" name="dest_machine_id" :value="destMachineId"/>
 						
 						<!-- Rclone Command Configuration Section -->
 						<div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -561,6 +702,8 @@ templ ConfigForm(ctx context.Context, data ConfigFormData) {
 								<i class="fas fa-upload mr-2 text-blue-500 dark:text-blue-400"></i>Source Configuration
 							</h3>
 							
+							@machinePicker("source", data.Machines, data.Config.SourceMachineID)
+
 							<!-- Source selection -->
 							@common.SourceSelection()
 							
@@ -648,6 +791,8 @@ templ ConfigForm(ctx context.Context, data ConfigFormData) {
 								<i class="fas fa-download mr-2 text-blue-500 dark:text-blue-400"></i>Destination Configuration
 							</h3>
 							
+							@machinePicker("dest", data.Machines, data.Config.DestMachineID)
+
 							<!-- Destination selection -->
 							@common.DestinationSelection()
 							
@@ -809,9 +954,12 @@ templ formvalidation() {
 				
 				// Get source type
 				const sourceType = document.querySelector('input[name="source_type"]').value;
+				const sourceMachineSelected = parseInt(
+					document.querySelector('[name="source_machine_id"]')?.value || '0'
+				) > 0;
 				
 				// For remote source, validate credentials
-				if (sourceType !== 'local') {
+				if (sourceType !== 'local' && !sourceMachineSelected) {
 					// Host validation for remote sources
 					const sourceHost = document.getElementById('source_host')?.value;
 					if (!sourceHost || sourceHost.trim() === '') {
@@ -890,9 +1038,12 @@ templ formvalidation() {
 					
 					// Get destination type
 					const destType = document.querySelector('input[name="destination_type"]').value;
+					const destMachineSelected = parseInt(
+						document.querySelector('[name="dest_machine_id"]')?.value || '0'
+					) > 0;
 					
 					// For remote destination, validate credentials
-					if (destType !== 'local') {
+					if (destType !== 'local' && !destMachineSelected) {
 						// Host validation for remote destinations
 						const destHost = document.getElementById('destination_host')?.value;
 						if (!destHost || destHost.trim() === '') {

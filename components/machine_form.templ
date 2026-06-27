@@ -1,0 +1,353 @@
+package components
+
+import (
+	"context"
+	"fmt"
+	"github.com/avier99/oMFT/internal/db"
+)
+
+type MachineFormData struct {
+	Machine *db.Machine
+	IsNew   bool
+	Error   string
+}
+
+templ MachineForm(ctx context.Context, data MachineFormData) {
+	@LayoutWithContext(machineFormTitle(data), ctx) {
+		<div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+
+		<script>
+			document.addEventListener('htmx:trigger', function(e) {
+				if (e.detail && e.detail.showToast) {
+					showMachineFormToast(e.detail.showToast.message, e.detail.showToast.type);
+				}
+			});
+			document.addEventListener('htmx:afterRequest', function(e) {
+				const trigger = e.detail.xhr && e.detail.xhr.getResponseHeader('HX-Trigger');
+				if (trigger) {
+					try {
+						const data = JSON.parse(trigger);
+						if (data.showToast) {
+							showMachineFormToast(data.showToast.message, data.showToast.type);
+						}
+					} catch(_) {}
+				}
+			});
+			function showMachineFormToast(message, type) {
+				const container = document.getElementById('toast-container');
+				const iconClass = type === 'success'
+					? 'text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-200'
+					: 'text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200';
+				const icon = type === 'success' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+				const toast = document.createElement('div');
+				toast.className = 'flex items-center w-full max-w-xs p-4 mb-4 rounded-lg shadow text-gray-500 bg-white dark:text-gray-400 dark:bg-gray-800 transform translate-y-16 opacity-0 transition-all duration-300 ease-out';
+				toast.innerHTML = `<div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg ${iconClass}">${icon}</div><div class="ml-3 text-sm font-normal">${message}</div>`;
+				container.appendChild(toast);
+				setTimeout(() => { toast.classList.remove('translate-y-16', 'opacity-0'); toast.classList.add('translate-y-0', 'opacity-100'); }, 10);
+				setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 300); }, 5000);
+			}
+		</script>
+
+		<div class="pb-8 w-full max-w-3xl">
+			<div class="mb-6">
+				<h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+					<i class="fas fa-server w-6 h-6 mr-2 text-blue-500 dark:text-blue-400"></i>
+					{ machineFormTitle(data) }
+				</h1>
+			</div>
+
+			if data.Error != "" {
+				<div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg dark:bg-red-900/20 dark:border-red-800">
+					<p class="text-sm text-red-700 dark:text-red-400">{ data.Error }</p>
+				</div>
+			}
+
+			<div
+				class="bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 p-6"
+				x-data={ machineFormAlpineData(data) }
+			>
+				<form
+					if data.IsNew {
+						action="/machines"
+					} else {
+						action={ templ.SafeURL(fmt.Sprintf("/machines/%d", data.Machine.ID)) }
+					}
+					method="POST"
+					id="machine-form"
+				>
+					<!-- Name -->
+					<div class="mb-5">
+						<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="name">Name</label>
+						<input
+							type="text"
+							id="name"
+							name="name"
+							value={ data.Machine.Name }
+							required
+							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+							placeholder="e.g. Production SFTP, Backblaze B2"
+						/>
+					</div>
+
+					<!-- Type -->
+					<div class="mb-5">
+						<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="type">Type</label>
+						<select
+							id="type"
+							name="type"
+							x-model="type"
+							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+						>
+							<option value="sftp" selected?={ data.Machine.Type == "sftp" }>SFTP</option>
+							<option value="hetzner" selected?={ data.Machine.Type == "hetzner" }>Hetzner Storage Box (SFTP)</option>
+							<option value="s3" selected?={ data.Machine.Type == "s3" }>Amazon S3</option>
+							<option value="wasabi" selected?={ data.Machine.Type == "wasabi" }>Wasabi</option>
+							<option value="minio" selected?={ data.Machine.Type == "minio" }>MinIO</option>
+							<option value="b2" selected?={ data.Machine.Type == "b2" }>Backblaze B2</option>
+							<option value="ftp" selected?={ data.Machine.Type == "ftp" }>FTP</option>
+							<option value="smb" selected?={ data.Machine.Type == "smb" }>SMB / Windows Share</option>
+							<option value="webdav" selected?={ data.Machine.Type == "webdav" }>WebDAV</option>
+							<option value="nextcloud" selected?={ data.Machine.Type == "nextcloud" }>Nextcloud</option>
+							<option value="gdrive" selected?={ data.Machine.Type == "gdrive" }>Google Drive</option>
+							<option value="gphotos" selected?={ data.Machine.Type == "gphotos" }>Google Photos</option>
+							<option value="local" selected?={ data.Machine.Type == "local" }>Local filesystem</option>
+						</select>
+					</div>
+
+					<!-- SFTP / Hetzner fields -->
+					<div x-show="type === 'sftp' || type === 'hetzner'" x-cloak>
+						@machineTextField("host", "Host", data.Machine.Host, "sftp.example.com")
+						@machineNumberField("port", "Port", data.Machine.Port, 22)
+						@machineTextField("user", "Username", data.Machine.User, "")
+						<div class="mb-4">
+							<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Authentication</label>
+							<div x-data="{ authMode: 'password' }" class="flex gap-4 mb-3">
+								<label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+									<input type="radio" x-model="authMode" value="password" class="text-blue-600"/>
+									Password
+								</label>
+								<label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+									<input type="radio" x-model="authMode" value="keyfile" class="text-blue-600"/>
+									Key file
+								</label>
+							</div>
+							<div x-show="authMode === 'password'">
+								@machinePasswordField("password", "Password")
+							</div>
+							<div x-show="authMode === 'keyfile'">
+								@machineTextField("key_file", "Key file path", data.Machine.KeyFile, "/home/user/.ssh/id_rsa")
+							</div>
+						</div>
+					</div>
+
+					<!-- S3 fields -->
+					<div x-show="type === 's3'" x-cloak>
+						@machineTextField("access_key", "Access Key ID", data.Machine.AccessKey, "")
+						@machinePasswordField("secret_key", "Secret Access Key")
+						@machineTextField("region", "Region", data.Machine.Region, "us-east-1")
+						@machineTextField("endpoint", "Endpoint (optional)", data.Machine.Endpoint, "")
+					</div>
+
+					<!-- Wasabi fields -->
+					<div x-show="type === 'wasabi'" x-cloak>
+						@machineTextField("access_key", "Access Key ID", data.Machine.AccessKey, "")
+						@machinePasswordField("secret_key", "Secret Key")
+						@machineTextField("region", "Region", data.Machine.Region, "us-east-1")
+						@machineTextField("endpoint", "Endpoint", data.Machine.Endpoint, "s3.wasabisys.com")
+					</div>
+
+					<!-- MinIO fields -->
+					<div x-show="type === 'minio'" x-cloak>
+						@machineTextField("access_key", "Access Key", data.Machine.AccessKey, "")
+						@machinePasswordField("secret_key", "Secret Key")
+						@machineTextField("endpoint", "Endpoint URL", data.Machine.Endpoint, "https://minio.example.com")
+						@machineTextField("region", "Region (optional)", data.Machine.Region, "")
+					</div>
+
+					<!-- B2 fields -->
+					<div x-show="type === 'b2'" x-cloak>
+						@machineTextField("access_key", "Account ID", data.Machine.AccessKey, "")
+						@machinePasswordField("secret_key", "Application Key")
+						@machineTextField("endpoint", "Endpoint (optional)", data.Machine.Endpoint, "")
+					</div>
+
+					<!-- FTP fields -->
+					<div x-show="type === 'ftp'" x-cloak>
+						@machineTextField("host", "Host", data.Machine.Host, "ftp.example.com")
+						@machineNumberField("port", "Port", data.Machine.Port, 21)
+						@machineTextField("user", "Username", data.Machine.User, "")
+						@machinePasswordField("password", "Password")
+						<div class="mb-5 flex items-center gap-2">
+							<input
+								type="checkbox"
+								id="passive_mode"
+								name="passive_mode"
+								checked?={ data.Machine.PassiveMode == nil || *data.Machine.PassiveMode }
+								class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+							/>
+							<label for="passive_mode" class="text-sm font-medium text-gray-900 dark:text-white">Passive mode</label>
+						</div>
+					</div>
+
+					<!-- SMB fields -->
+					<div x-show="type === 'smb'" x-cloak>
+						@machineTextField("host", "Host", data.Machine.Host, "\\\\server\\share or server")
+						@machineNumberField("port", "Port", data.Machine.Port, 445)
+						@machineTextField("user", "Username", data.Machine.User, "")
+						@machinePasswordField("password", "Password")
+						@machineTextField("domain", "Domain (optional)", data.Machine.Domain, "")
+					</div>
+
+					<!-- WebDAV fields -->
+					<div x-show="type === 'webdav'" x-cloak>
+						@machineTextField("host", "URL", data.Machine.Host, "https://webdav.example.com")
+						@machineTextField("user", "Username", data.Machine.User, "")
+						@machinePasswordField("password", "Password")
+					</div>
+
+					<!-- Nextcloud fields -->
+					<div x-show="type === 'nextcloud'" x-cloak>
+						@machineTextField("host", "Nextcloud URL", data.Machine.Host, "https://nextcloud.example.com")
+						@machineTextField("user", "Username", data.Machine.User, "")
+						@machinePasswordField("password", "Password")
+					</div>
+
+					<!-- Google Drive fields -->
+					<div x-show="type === 'gdrive'" x-cloak>
+						<div class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg dark:bg-yellow-900/20 dark:border-yellow-800 text-sm text-yellow-800 dark:text-yellow-300">
+							<i class="fas fa-exclamation-triangle mr-1"></i>
+							Google Drive requires OAuth authentication via the config form after saving.
+						</div>
+						@machineTextField("client_id", "Client ID (optional)", data.Machine.ClientID, "")
+						@machinePasswordField("client_secret", "Client Secret (optional)")
+						@machineTextField("drive_id", "Root Folder ID (optional)", data.Machine.DriveID, "")
+						@machineTextField("team_drive", "Team Drive ID (optional)", data.Machine.TeamDrive, "")
+					</div>
+
+					<!-- Google Photos fields -->
+					<div x-show="type === 'gphotos'" x-cloak>
+						<div class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg dark:bg-yellow-900/20 dark:border-yellow-800 text-sm text-yellow-800 dark:text-yellow-300">
+							<i class="fas fa-exclamation-triangle mr-1"></i>
+							Google Photos requires OAuth authentication via the config form after saving.
+						</div>
+						@machineTextField("client_id", "Client ID (optional)", data.Machine.ClientID, "")
+						@machinePasswordField("client_secret", "Client Secret (optional)")
+					</div>
+
+					<!-- Local: no fields -->
+					<div x-show="type === 'local'" x-cloak>
+						<p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Local filesystem — no connection credentials needed. Paths are set per transfer config.</p>
+					</div>
+
+					<!-- Test connection -->
+					<div class="mb-6 mt-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+						<h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Test Connection</h3>
+						<div class="flex gap-3 items-end">
+							<div class="flex-1">
+								<label class="block mb-1 text-xs text-gray-500 dark:text-gray-400" for="test_path">Test path (optional, defaults to root)</label>
+								<input
+									type="text"
+									id="test_path"
+									name="test_path"
+									class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+									placeholder="/"
+								/>
+							</div>
+							<button
+								type="button"
+								hx-post="/machines/test-connection"
+								hx-include="#machine-form"
+								hx-indicator="#test-spinner"
+								class="px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 rounded-lg dark:bg-indigo-500 dark:hover:bg-indigo-600 flex items-center gap-2">
+								<span id="test-spinner" class="htmx-indicator">
+									<i class="fas fa-spinner fa-spin"></i>
+								</span>
+								<i class="fas fa-plug"></i>
+								Test
+							</button>
+						</div>
+					</div>
+
+					<!-- Actions -->
+					<div class="flex gap-3">
+						<button
+							type="submit"
+							class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+							if data.IsNew {
+								Save Machine
+							} else {
+								Update Machine
+							}
+						</button>
+						<a href="/machines" class="text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+							Cancel
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	}
+}
+
+func machineFormTitle(data MachineFormData) string {
+	if data.IsNew {
+		return "New Machine"
+	}
+	return "Edit Machine"
+}
+
+func machineFormAlpineData(data MachineFormData) string {
+	t := data.Machine.Type
+	if t == "" {
+		t = "sftp"
+	}
+	return fmt.Sprintf(`{ type: '%s' }`, t)
+}
+
+templ machineTextField(name, label, value, placeholder string) {
+	<div class="mb-5">
+		<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for={ name }>{ label }</label>
+		<input
+			type="text"
+			id={ name }
+			name={ name }
+			value={ value }
+			placeholder={ placeholder }
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+		/>
+	</div>
+}
+
+templ machineNumberField(name, label string, value, defaultValue int) {
+	<div class="mb-5">
+		<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for={ name }>{ label }</label>
+		<input
+			type="number"
+			id={ name }
+			name={ name }
+			value={ machinePortValue(value, defaultValue) }
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+		/>
+	</div>
+}
+
+func machinePortValue(value, defaultValue int) string {
+	if value == 0 {
+		return fmt.Sprintf("%d", defaultValue)
+	}
+	return fmt.Sprintf("%d", value)
+}
+
+templ machinePasswordField(name, label string) {
+	<div class="mb-5">
+		<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for={ name }>{ label }</label>
+		<input
+			type="password"
+			id={ name }
+			name={ name }
+			autocomplete="new-password"
+			placeholder="Leave blank to keep existing"
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+		/>
+	</div>
+}

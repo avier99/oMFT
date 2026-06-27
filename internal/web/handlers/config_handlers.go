@@ -39,9 +39,12 @@ func (h *Handlers) HandleConfigs(c *gin.Context) {
 
 // HandleNewConfig handles the GET /configs/new route
 func (h *Handlers) HandleNewConfig(c *gin.Context) {
+	userID := c.GetUint("userID")
+	machines, _ := h.DB.GetMachines(userID)
 	data := components.ConfigFormData{
-		Config: &db.TransferConfig{},
-		IsNew:  true,
+		Config:   &db.TransferConfig{},
+		IsNew:    true,
+		Machines: machines,
 	}
 	components.ConfigForm(c.Request.Context(), data).Render(c, c.Writer)
 }
@@ -98,9 +101,11 @@ func (h *Handlers) HandleEditConfig(c *gin.Context) {
 		}
 	}
 
+	machines, _ := h.DB.GetMachines(userID)
 	data := components.ConfigFormData{
 		Config:             &config,
 		IsNew:              false,
+		Machines:           machines,
 		InitialCommand:     initialCommand,
 		SelectedFlagsMap:   selectedFlagsMap,
 		SelectedFlagValues: selectedFlagValues,

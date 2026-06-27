@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type rcloneRemoteConfig struct {
@@ -360,6 +362,59 @@ func (db *DB) ensureMachineConfigFromExistingRemote(machine *Machine, existingCo
 func (db *DB) appendMachineRemoteToConfig(configPath string, machine *Machine, remoteName string) error {
 	machinePath := db.GetMachineRclonePath(machine)
 	return copyRcloneSection(machinePath, machineRemoteName(machine), configPath, remoteName)
+}
+
+// TestMachineConnection runs rclone lsd against a temporary config built from machine fields.
+// testPath is optional; empty string tests the root listing.
+func (db *DB) TestMachineConnection(machine *Machine, testPath string) (bool, string, error) {
+	tempDir, err := os.MkdirTemp("", "omft-machine-test-")
+	if err != nil {
+		return false, "Failed to create temp directory", err
+	}
+	defer os.RemoveAll(tempDir)
+
+	tempConfig := filepath.Join(tempDir, "machine_test.conf")
+	if err := createRcloneRemote(tempConfig, "test", remoteConfigFromMachine(machine)); err != nil {
+		return false, fmt.Sprintf("Failed to build rclone config: %v", err), err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	args := []string{
+		"--config", tempConfig,
+		"lsd",
+		"test:" + testPath,
+		"--low-level-retries", "1",
+		"--retries", "1",
+	}
+
+	var stderr strings.Builder
+	cmd := exec.CommandContext(ctx, rclonePath(), args...)
+	cmd.Stderr = &stderr
+
+	err = cmd.Run()
+	stderrStr := stderr.String()
+
+	if err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return false, "Connection test timed out after 30 seconds.", ctx.Err()
+		}
+		msg := fmt.Sprintf("Connection failed: %v", err)
+		switch {
+		case strings.Contains(stderrStr, "connect: connection refused"):
+			msg = "Connection refused by host."
+		case strings.Contains(stderrStr, "no such host"), strings.Contains(stderrStr, "name resolution error"):
+			msg = "Hostname not found or DNS resolution error."
+		case strings.Contains(stderrStr, "authentication failed"), strings.Contains(stderrStr, "login incorrect"), strings.Contains(stderrStr, "permission denied"):
+			msg = "Authentication failed — check credentials."
+		case strings.Contains(stderrStr, "directory not found"):
+			msg = "Path not found."
+		}
+		return false, msg, err
+	}
+
+	return true, "Connection test successful!", nil
 }
 
 func (db *DB) generateRcloneConfigWithMachines(config *TransferConfig, configPath, existingConfigContent string) error {

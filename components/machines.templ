@@ -1,0 +1,139 @@
+package components
+
+import (
+	"context"
+	"fmt"
+	"github.com/avier99/oMFT/internal/db"
+)
+
+type MachinesData struct {
+	Machines []db.Machine
+}
+
+templ Machines(ctx context.Context, data MachinesData) {
+	@LayoutWithContext("Machines", ctx) {
+		<div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+
+		<script>
+			function showMachineToast(message, type) {
+				const container = document.getElementById('toast-container');
+				const id = 'toast-' + Date.now();
+				const iconClass = type === 'success'
+					? 'text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-200'
+					: 'text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200';
+				const icon = type === 'success' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+				const toast = document.createElement('div');
+				toast.id = id;
+				toast.className = 'flex items-center w-full max-w-xs p-4 mb-4 rounded-lg shadow text-gray-500 bg-white dark:text-gray-400 dark:bg-gray-800 transform translate-y-16 opacity-0 transition-all duration-300 ease-out';
+				toast.innerHTML = `<div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg ${iconClass}">${icon}</div><div class="ml-3 text-sm font-normal">${message}</div>`;
+				container.appendChild(toast);
+				setTimeout(() => { toast.classList.remove('translate-y-16', 'opacity-0'); toast.classList.add('translate-y-0', 'opacity-100'); }, 10);
+				setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 300); }, 5000);
+			}
+
+			document.addEventListener('htmx:afterRequest', function(e) {
+				if (e.detail.pathInfo && e.detail.pathInfo.requestPath && e.detail.pathInfo.requestPath.match(/^\/machines\/\d+$/) && e.detail.verb === 'DELETE') {
+					if (!e.detail.successful) {
+						let msg = 'Failed to delete machine';
+						try { msg = JSON.parse(e.detail.xhr.responseText).error; } catch(_) {}
+						showMachineToast(msg, 'error');
+					}
+				}
+			});
+		</script>
+
+		<div class="pb-8 w-full">
+			<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+				<h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+					<i class="fas fa-server w-6 h-6 mr-2 text-blue-500 dark:text-blue-400"></i>
+					Machines
+				</h1>
+				<a href="/machines/new" class="flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+					<i class="fas fa-plus w-4 h-4 mr-2"></i>
+					New Machine
+				</a>
+			</div>
+
+			<div class="mt-6">
+				if len(data.Machines) == 0 {
+					<div class="bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 p-8 flex flex-col items-center justify-center text-center">
+						<div class="inline-flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 mb-4 dark:bg-gray-700">
+							<i class="fas fa-server text-gray-400 dark:text-gray-500 text-3xl"></i>
+						</div>
+						<h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">No machines yet</h3>
+						<p class="text-gray-500 dark:text-gray-400 mb-4">Machines store reusable connection credentials referenced by transfer configs.</p>
+						<a href="/machines/new" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+							<i class="fas fa-plus w-4 h-4 mr-2"></i>
+							Create First Machine
+						</a>
+					</div>
+				} else {
+					<div class="bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
+						<ul class="divide-y divide-gray-200 dark:divide-gray-700">
+							for _, machine := range data.Machines {
+								<li id={ fmt.Sprintf("machine-row-%d", machine.ID) }>
+									<div class="block hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+										<div class="px-4 py-4 sm:px-6">
+											<div class="flex items-center justify-between">
+												<div class="flex items-center gap-3">
+													<p class="text-sm font-medium text-blue-600 dark:text-blue-400">{ machine.Name }</p>
+													<span class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{ machine.Type }</span>
+												</div>
+												<div class="ml-2 flex-shrink-0 flex space-x-2">
+													<a href={ templ.SafeURL(fmt.Sprintf("/machines/%d", machine.ID)) } class="text-gray-700 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
+														<i class="fas fa-edit w-3.5 h-3.5 mr-1.5"></i>
+														Edit
+													</a>
+													<button
+														type="button"
+														hx-delete={ fmt.Sprintf("/machines/%d", machine.ID) }
+														hx-target={ fmt.Sprintf("#machine-row-%d", machine.ID) }
+														hx-swap="delete"
+														hx-confirm={ fmt.Sprintf("Delete machine '%s'? This cannot be undone.", machine.Name) }
+														class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+														<i class="fas fa-trash-alt w-3.5 h-3.5 mr-1.5"></i>
+														Delete
+													</button>
+												</div>
+											</div>
+											<div class="mt-2 flex flex-wrap gap-4">
+												if machine.Host != "" {
+													<p class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+														<i class="fas fa-network-wired w-4 h-4 mr-1.5 text-gray-400"></i>
+														{ machine.Host }
+														if machine.Port != 0 {
+															:{ fmt.Sprintf("%d", machine.Port) }
+														}
+													</p>
+												}
+												if machine.User != "" {
+													<p class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+														<i class="fas fa-user w-4 h-4 mr-1.5 text-gray-400"></i>
+														{ machine.User }
+													</p>
+												}
+												if machine.Region != "" {
+													<p class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+														<i class="fas fa-globe w-4 h-4 mr-1.5 text-gray-400"></i>
+														{ machine.Region }
+													</p>
+												}
+											</div>
+										</div>
+									</div>
+								</li>
+							}
+						</ul>
+					</div>
+				}
+			</div>
+
+			<div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm mt-8 p-4 border border-gray-200 dark:border-gray-700">
+				<div class="flex items-start">
+					<i class="fas fa-info-circle w-4 h-4 text-blue-500 dark:text-blue-400 mr-2 mt-0.5"></i>
+					<p class="text-sm text-gray-700 dark:text-gray-300">Machines store connection details (host, credentials) once and are referenced by transfer configs. Credentials are stored in rclone config files, not in the database.</p>
+				</div>
+			</div>
+		</div>
+	}
+}

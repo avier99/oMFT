@@ -73,6 +73,14 @@ func (h *Handlers) RegisterRoutes(router *gin.Engine) {
 		authorized.GET("api/rclone/command-flags", func(c *gin.Context) { rcloneHandler.RcloneCommandFlags(c) })
 		authorized.GET("api/rclone/command/:id/usage", func(c *gin.Context) { rcloneHandler.RcloneCommandUsage(c) })
 
+		authorized.GET("/machines", h.HandleMachines)
+		authorized.GET("/machines/new", h.HandleNewMachine)
+		authorized.GET("/machines/:id", h.HandleEditMachine)
+		authorized.POST("/machines", h.HandleCreateMachine)
+		authorized.POST("/machines/:id", h.HandleUpdateMachine)
+		authorized.DELETE("/machines/:id", h.HandleDeleteMachine)
+		authorized.POST("/machines/test-connection", h.HandleTestMachineConnection)
+
 		authorized.GET("/jobs", h.HandleJobs)
 		authorized.GET("/jobs/new", h.HandleNewJob)
 		authorized.GET("/jobs/:id", h.HandleEditJob)
