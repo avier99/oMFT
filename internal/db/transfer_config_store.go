@@ -74,6 +74,12 @@ func (db *DB) GetConfigRclonePath(config *TransferConfig) string {
 // This function now primarily focuses on generating the content string or calling rclone config create
 func (db *DB) GenerateRcloneConfig(config *TransferConfig) error {
 	configPath := db.GetConfigRclonePath(config)
+	existingConfigContent := ""
+	if content, err := os.ReadFile(configPath); err == nil {
+		existingConfigContent = string(content)
+	} else if !os.IsNotExist(err) {
+		return fmt.Errorf("failed to read existing rclone config: %v", err)
+	}
 
 	// Get the directory part of the path
 	configDir := filepath.Dir(configPath)
@@ -87,6 +93,10 @@ func (db *DB) GenerateRcloneConfig(config *TransferConfig) error {
 	rclonePath := os.Getenv("RCLONE_PATH")
 	if rclonePath == "" {
 		rclonePath = "rclone"
+	}
+
+	if config.SourceMachineID != nil || config.DestMachineID != nil {
+		return db.generateRcloneConfigWithMachines(config, configPath, existingConfigContent)
 	}
 
 	sourceName := fmt.Sprintf("source_%d", config.ID)

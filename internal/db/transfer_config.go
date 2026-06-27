@@ -27,10 +27,12 @@ type TransferConfig struct {
 	// FTP source fields
 	SourcePassiveMode *bool `gorm:"default:true" form:"source_passive_mode"` // Already a pointer, no change needed here
 	// OneDrive and Google Drive source fields
-	SourceClientID     string `form:"source_client_id"`
-	SourceClientSecret string `form:"source_client_secret" gorm:"-"` // Not stored in DB, only used for form
-	SourceDriveID      string `form:"source_drive_id"`               // For OneDrive
-	SourceTeamDrive    string `form:"source_team_drive"`             // For Google Drive
+	SourceClientID     string   `form:"source_client_id"`
+	SourceClientSecret string   `form:"source_client_secret" gorm:"-"` // Not stored in DB, only used for form
+	SourceDriveID      string   `form:"source_drive_id"`               // For OneDrive
+	SourceTeamDrive    string   `form:"source_team_drive"`             // For Google Drive
+	SourceMachineID    *uint    `form:"source_machine_id"`
+	SourceMachine      *Machine `gorm:"foreignkey:SourceMachineID"`
 	// Google Photos source fields
 	SourceReadOnly        *bool `form:"source_read_only"`        // For Google Photos
 	SourceStartYear       int   `form:"source_start_year"`       // For Google Photos
@@ -57,10 +59,12 @@ type TransferConfig struct {
 	// FTP destination fields
 	DestPassiveMode *bool `gorm:"default:true" form:"dest_passive_mode"`
 	// OneDrive and Google Drive destination fields
-	DestClientID     string `form:"dest_client_id"`
-	DestClientSecret string `form:"dest_client_secret" gorm:"-"` // Not stored in DB, only used for form
-	DestDriveID      string `form:"dest_drive_id"`               // For OneDrive
-	DestTeamDrive    string `form:"dest_team_drive"`             // For Google Drive
+	DestClientID     string   `form:"dest_client_id"`
+	DestClientSecret string   `form:"dest_client_secret" gorm:"-"` // Not stored in DB, only used for form
+	DestDriveID      string   `form:"dest_drive_id"`               // For OneDrive
+	DestTeamDrive    string   `form:"dest_team_drive"`             // For Google Drive
+	DestMachineID    *uint    `form:"dest_machine_id"`
+	DestMachine      *Machine `gorm:"foreignkey:DestMachineID"`
 	// Google Photos destination fields
 	DestReadOnly        *bool `form:"dest_read_only"`        // For Google Photos
 	DestStartYear       int   `form:"dest_start_year"`       // For Google Photos

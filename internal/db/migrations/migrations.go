@@ -27,6 +27,7 @@ func GetMigrations(db *gorm.DB) *gormigrate.Gormigrate {
 		RecoverNotificationServicesRename(), // 012b
 		RecoverAuthProvidersRename(),        // 012c
 		CleanupInvalidBooleans(),            // 013
+		AddMachines(),                       // 014
 	)
 
 	return gormigrate.New(db, gormigrate.DefaultOptions, migrations)
