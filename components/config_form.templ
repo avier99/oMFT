@@ -19,6 +19,7 @@ type ConfigFormData struct {
 	InitialCommand     *db.RcloneCommand
 	SelectedFlagsMap   map[uint]bool
 	SelectedFlagValues map[uint]string
+	LatestCheck        *db.TransferCheck
 }
 
 type machineJSON struct {
@@ -562,6 +563,7 @@ templ ConfigForm(ctx context.Context, data ConfigFormData) {
 						<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
 							Configure your file transfer settings using the form below
 						</p>
+						@CheckLatestBadge(data.LatestCheck)
 					</div>
 
 					@machinesDataScript(data.Machines)
@@ -887,18 +889,29 @@ templ ConfigForm(ctx context.Context, data ConfigFormData) {
 								class="text-white bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
 								<i class="fas fa-arrow-left mr-2"></i>Cancel
 							</a>
-							<button 
-								type="submit" 
-								class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-								<span class="flex items-center">
-									<i class="fas fa-save mr-2"></i>
-									if data.IsNew {
-										Create Configuration
-									} else {
-										Save Changes
-									}
-								</span>
-							</button>
+							<div class="flex items-center gap-3">
+								if !data.IsNew {
+									<button
+										type="button"
+										hx-post={ fmt.Sprintf("/configs/%d/check", data.Config.ID) }
+										hx-boost="false"
+										class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-indigo-800">
+										<i class="fas fa-search mr-2"></i>Verify
+									</button>
+								}
+								<button 
+									type="submit" 
+									class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+									<span class="flex items-center">
+										<i class="fas fa-save mr-2"></i>
+										if data.IsNew {
+											Create Configuration
+										} else {
+											Save Changes
+										}
+									</span>
+								</button>
+							</div>
 						</div>
 					</form>
 				</div>

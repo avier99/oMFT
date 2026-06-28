@@ -32,9 +32,18 @@ func (db *DB) CreateTransferCheck(check *TransferCheck) error {
 	return db.Create(check).Error
 }
 
-// UpdateTransferCheck updates an existing transfer check record.
+// UpdateTransferCheck updates only the fields the check owns, avoiding GORM's
+// FullSaveAssociations behavior which would upsert the preloaded Config/Creator
+// and could silently revert config edits made during a long-running check.
 func (db *DB) UpdateTransferCheck(check *TransferCheck) error {
-	return db.Save(check).Error
+	return db.Model(check).Updates(map[string]interface{}{
+		"status":            check.Status,
+		"completed_at":      check.CompletedAt,
+		"differences":       check.Differences,
+		"missing_on_source": check.MissingOnSource,
+		"missing_on_dest":   check.MissingOnDest,
+		"error_message":     check.ErrorMessage,
+	}).Error
 }
 
 // GetTransferCheck retrieves a single transfer check by ID.

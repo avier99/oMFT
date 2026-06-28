@@ -102,6 +102,7 @@ func (h *Handlers) HandleEditConfig(c *gin.Context) {
 	}
 
 	machines, _ := h.DB.GetMachines(userID)
+	latestCheck, _ := h.DB.GetLatestTransferCheck(config.ID)
 	data := components.ConfigFormData{
 		Config:             &config,
 		IsNew:              false,
@@ -109,6 +110,7 @@ func (h *Handlers) HandleEditConfig(c *gin.Context) {
 		InitialCommand:     initialCommand,
 		SelectedFlagsMap:   selectedFlagsMap,
 		SelectedFlagValues: selectedFlagValues,
+		LatestCheck:        latestCheck,
 	}
 	components.ConfigForm(c.Request.Context(), data).Render(c, c.Writer)
 }
