@@ -8,9 +8,10 @@ import (
 )
 
 type CheckResultData struct {
-	Check  db.TransferCheck
-	Config db.TransferConfig
-	Checks []db.TransferCheck
+	Check      db.TransferCheck
+	Config     db.TransferConfig
+	Checks     []db.TransferCheck
+	LogContent string
 }
 
 func checkTotalIssues(c db.TransferCheck) int {
@@ -157,6 +158,13 @@ templ CheckResult(ctx context.Context, data CheckResultData) {
 
 			@CheckStatusPartial(data.Check)
 
+			if data.Check.Status == "running" || data.Check.LogPath != "" {
+				<div class="mt-6">
+					<h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Log Output</h2>
+					@CheckLogPartial(data.LogContent, data.Check)
+				</div>
+			}
+
 			if len(data.Checks) > 0 {
 				<div class="mt-8">
 					<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Check History</h2>
@@ -216,20 +224,24 @@ templ CheckHistoryRow(check db.TransferCheck, isCurrent bool) {
 	</tr>
 }
 
-templ CheckLatestBadge(check *db.TransferCheck) {
+templ CheckLatestBadge(check *db.TransferCheck, configID uint) {
 	if check != nil {
 		if check.Status == "running" {
-			<div class="mt-3 inline-flex items-center gap-2 text-sm text-amber-700 dark:text-amber-300">
+			<div id="check-latest-badge"
+				hx-get={ fmt.Sprintf("/configs/%d/check-badge", configID) }
+				hx-trigger="every 5s"
+				hx-swap="outerHTML"
+				class="mt-3 inline-flex items-center gap-2 text-sm text-amber-700 dark:text-amber-300">
 				<i class="fas fa-spinner fa-spin"></i>
 				<span>Check in progress...</span>
 			</div>
 		} else if check.Status == "completed" && checkAllMatch(*check) {
-			<div class="mt-3 inline-flex items-center gap-2 text-sm text-green-700 dark:text-green-300">
+			<div id="check-latest-badge" class="mt-3 inline-flex items-center gap-2 text-sm text-green-700 dark:text-green-300">
 				<i class="fas fa-check-circle"></i>
 				<span>Verified { formatRelativeTime(*checkCompletedTime(*check)) }</span>
 			</div>
 		} else if check.Status == "completed" {
-			<div class="mt-3 inline-flex items-center gap-2 text-sm text-amber-700 dark:text-amber-300">
+			<div id="check-latest-badge" class="mt-3 inline-flex items-center gap-2 text-sm text-amber-700 dark:text-amber-300">
 				<i class="fas fa-exclamation-triangle"></i>
 				<a href={ templ.SafeURL(fmt.Sprintf("/checks/%d", check.ID)) } class="hover:underline">
 					{ fmt.Sprintf("%d differences", checkTotalIssues(*check)) }
@@ -237,13 +249,25 @@ templ CheckLatestBadge(check *db.TransferCheck) {
 				<span class="text-gray-500 dark:text-gray-400">· { formatRelativeTime(*checkCompletedTime(*check)) }</span>
 			</div>
 		} else if check.Status == "failed" {
-			<div class="mt-3 inline-flex items-center gap-2 text-sm text-red-700 dark:text-red-300">
+			<div id="check-latest-badge" class="mt-3 inline-flex items-center gap-2 text-sm text-red-700 dark:text-red-300">
 				<i class="fas fa-times-circle"></i>
 				<a href={ templ.SafeURL(fmt.Sprintf("/checks/%d", check.ID)) } class="hover:underline">
 					Check failed
 				</a>
 			</div>
 		}
+	}
+}
+
+templ CheckLogPartial(content string, check db.TransferCheck) {
+	if check.Status == "running" {
+		<pre id="check-log"
+			hx-get={ fmt.Sprintf("/checks/%d/log", check.ID) }
+			hx-trigger="every 2s"
+			hx-swap="outerHTML"
+			class="p-4 bg-gray-900 text-gray-100 rounded-lg text-xs font-mono overflow-x-auto max-h-96 overflow-y-auto whitespace-pre-wrap">{ content }</pre>
+	} else {
+		<pre id="check-log" class="p-4 bg-gray-900 text-gray-100 rounded-lg text-xs font-mono overflow-x-auto max-h-96 overflow-y-auto whitespace-pre-wrap">{ content }</pre>
 	}
 }
 

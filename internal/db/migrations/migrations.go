@@ -29,6 +29,7 @@ func GetMigrations(db *gorm.DB) *gormigrate.Gormigrate {
 		CleanupInvalidBooleans(),            // 013
 		AddMachines(),                       // 014
 		AddTransferChecks(),                 // 015
+		AddTransferCheckLogPath(),           // 016
 	)
 
 	return gormigrate.New(db, gormigrate.DefaultOptions, migrations)

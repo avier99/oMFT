@@ -563,7 +563,7 @@ templ ConfigForm(ctx context.Context, data ConfigFormData) {
 						<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
 							Configure your file transfer settings using the form below
 						</p>
-						@CheckLatestBadge(data.LatestCheck)
+						@CheckLatestBadge(data.LatestCheck, data.Config.ID)
 					</div>
 
 					@machinesDataScript(data.Machines)

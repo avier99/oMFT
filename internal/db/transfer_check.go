@@ -21,6 +21,7 @@ type TransferCheck struct {
 	MissingOnSource int `gorm:"not null;default:0"`
 	MissingOnDest   int `gorm:"not null;default:0"`
 	ErrorMessage    string
+	LogPath         string
 	CreatedBy       uint `gorm:"not null"`
 	Creator         User `gorm:"foreignkey:CreatedBy"`
 	CreatedAt       time.Time
@@ -43,6 +44,7 @@ func (db *DB) UpdateTransferCheck(check *TransferCheck) error {
 		"missing_on_source": check.MissingOnSource,
 		"missing_on_dest":   check.MissingOnDest,
 		"error_message":     check.ErrorMessage,
+		"log_path":          check.LogPath,
 	}).Error
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"time"
@@ -60,7 +61,8 @@ func parseCheckOutput(output string) (CheckResult, bool) {
 }
 
 // RunTransferCheck compares source and destination paths for a transfer config using rclone check.
-func RunTransferCheck(config *db.TransferConfig, configPath string) (CheckResult, error) {
+// When logPath is non-empty, rclone output is written to that file for live polling.
+func RunTransferCheck(config *db.TransferConfig, configPath string, logPath string) (CheckResult, error) {
 	rclonePath := os.Getenv("RCLONE_PATH")
 	if rclonePath == "" {
 		rclonePath = "rclone"
@@ -77,9 +79,27 @@ func RunTransferCheck(config *db.TransferConfig, configPath string) (CheckResult
 		"--log-level", "NOTICE",
 	}
 
+	if logPath != "" {
+		if err := os.MkdirAll(filepath.Dir(logPath), 0755); err != nil {
+			return CheckResult{}, fmt.Errorf("failed to create log directory: %w", err)
+		}
+		args = append(args, "--log-file", logPath)
+	}
+
 	cmd := execCommandContext(ctx, rclonePath, args...)
-	output, err := cmdCombinedOutput(cmd)
-	outputStr := string(output)
+
+	var outputStr string
+	var err error
+	if logPath != "" {
+		err = cmdRun(cmd)
+		if output, readErr := os.ReadFile(logPath); readErr == nil {
+			outputStr = string(output)
+		}
+	} else {
+		var output []byte
+		output, err = cmdCombinedOutput(cmd)
+		outputStr = string(output)
+	}
 
 	result, parsed := parseCheckOutput(outputStr)
 	if parsed {
