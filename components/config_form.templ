@@ -499,7 +499,8 @@ func getInitialData(config *db.TransferConfig) string {
 }
 
 templ machinesDataScript(machines []db.Machine) {
-	<script>window.machinesData = { marshalMachinesJSON(machines) };</script>
+	<div id="machines-json" data-machines={ marshalMachinesJSON(machines) } hidden></div>
+	<script>window.machinesData = JSON.parse(document.getElementById('machines-json').dataset.machines);</script>
 }
 
 templ machinePicker(side string, machines []db.Machine, currentID *uint) {

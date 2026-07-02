@@ -754,9 +754,30 @@ func (h *Handlers) HandleTestProviderConnection(c *gin.Context) {
 		config.UseBuiltinAuthDest = &useBuiltinAuthDestValue
 	}
 
-	// Call the rclone test function (to be implemented)
-	success, message, err := rclone_service.TestRcloneConnection(config, providerType, h.DB) // Pass DB if needed for built-in auth
-	toastType := "info"                                                                      // Default type
+	// When a machine is selected, test via machine credentials (stored in machine conf file).
+	var success bool
+	var message string
+	var err error
+	if providerType == "source" && config.SourceMachineID != nil && *config.SourceMachineID != 0 {
+		machine, mErr := h.DB.GetMachine(*config.SourceMachineID)
+		if mErr != nil {
+			message = fmt.Sprintf("Machine not found: %v", mErr)
+			err = mErr
+		} else {
+			success, message, err = h.DB.TestMachineConnection(machine, config.SourcePath)
+		}
+	} else if providerType == "destination" && config.DestMachineID != nil && *config.DestMachineID != 0 {
+		machine, mErr := h.DB.GetMachine(*config.DestMachineID)
+		if mErr != nil {
+			message = fmt.Sprintf("Machine not found: %v", mErr)
+			err = mErr
+		} else {
+			success, message, err = h.DB.TestMachineConnection(machine, config.DestinationPath)
+		}
+	} else {
+		success, message, err = rclone_service.TestRcloneConnection(config, providerType, h.DB)
+	}
+	toastType := "info"
 	if err != nil {
 		log.Printf("Error testing rclone connection: %v. Message: %s", err, message) // Log both err and message
 		toastType = "error"
