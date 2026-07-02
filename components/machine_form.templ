@@ -119,9 +119,9 @@ templ MachineForm(ctx context.Context, data MachineFormData) {
 						@machineTextField("host", "Host", data.Machine.Host, "sftp.example.com")
 						@machineNumberField("port", "Port", data.Machine.Port, 22)
 						@machineTextField("user", "Username", data.Machine.User, "")
-						<div class="mb-4">
+						<div class="mb-4" x-data="{ authMode: 'password' }">
 							<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Authentication</label>
-							<div x-data="{ authMode: 'password' }" class="flex gap-4 mb-3">
+							<div class="flex gap-4 mb-3">
 								<label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
 									<input type="radio" x-model="authMode" value="password" class="text-blue-600"/>
 									Password

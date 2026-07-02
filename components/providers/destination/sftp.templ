@@ -2,6 +2,7 @@ package destination
 
 templ SFTPDestinationForm() {
 	<div class="space-y-6 mt-4">
+		<div x-show="destMachineId === 0" class="space-y-6">
 		<div>
 			<label for="dest_host" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">SFTP Host</label>
 			<div class="relative">
@@ -79,6 +80,7 @@ templ SFTPDestinationForm() {
 					placeholder="/path/to/id_rsa" x-bind:required="destAuthType === 'key'" />
 			</div>
 			<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Path to the SSH private key file</p>
+		</div>
 		</div>
 
 		<div>

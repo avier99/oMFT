@@ -7,6 +7,7 @@ templ GooglePhotosDestinationForm() {
 				destClientSecret = '';
 			}
 		})">
+		<div x-show="destMachineId === 0" class="space-y-6">
 		<div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300" role="alert">
 			<div class="flex items-center">
 				<i class="fas fa-info-circle mr-2"></i>
@@ -106,6 +107,7 @@ templ GooglePhotosDestinationForm() {
 		<p class="ms-14 text-sm text-gray-500 dark:text-gray-400">
 			Include archived photos and videos in media listings
 		</p>
+		</div>
 
 		<div class="mb-6">
 			<label for="destination_path" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Album Path</label>
@@ -122,6 +124,7 @@ templ GooglePhotosDestinationForm() {
 			</p>
 		</div>
 
+		<div x-show="destMachineId === 0" class="space-y-6">
 		<div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 dark:text-yellow-300" role="alert">
 			<div class="flex">
 				<i class="fas fa-exclamation-triangle mr-2 flex-shrink-0"></i>
@@ -183,6 +186,7 @@ templ GooglePhotosDestinationForm() {
 					<p class="mt-1">When downloading from Google Photos, be aware that some original metadata may not be preserved. Google Photos processes and may compress some images upon upload.</p>
 				</div>
 			</div>
+		</div>
 		</div>
 	</div>
 } 

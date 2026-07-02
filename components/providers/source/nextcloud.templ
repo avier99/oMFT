@@ -2,6 +2,7 @@ package source
 
 templ NextCloudSourceForm() {
 	<div class="space-y-6 mt-4">
+		<div x-show="sourceMachineId === 0" class="space-y-6">
 		<div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300" role="alert">
 			<div class="flex items-center">
 				<i class="fas fa-info-circle mr-2"></i>
@@ -53,6 +54,7 @@ templ NextCloudSourceForm() {
 				Your NextCloud account password
 			</p>
 		</div>
+		</div>
 
 		<div class="mb-6">
 			<label for="source_path" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Remote Path</label>
@@ -69,6 +71,7 @@ templ NextCloudSourceForm() {
 			</p>
 		</div>
 		
+		<div x-show="sourceMachineId === 0" class="space-y-6">
 		<div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 dark:text-yellow-300" role="alert">
 			<div class="flex">
 				<i class="fas fa-lightbulb mr-2 flex-shrink-0"></i>
@@ -77,6 +80,7 @@ templ NextCloudSourceForm() {
 					<p class="mt-1">If you have two-factor authentication enabled on your NextCloud account, you'll need to create an app password in your NextCloud security settings.</p>
 				</div>
 			</div>
+		</div>
 		</div>
 	</div>
 } 

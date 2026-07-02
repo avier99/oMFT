@@ -541,6 +541,19 @@ templ machinePicker(side string, machines []db.Machine, currentID *uint) {
 				</a>
 			</p>
 		}
+		if side == "source" {
+			<div x-show="sourceMachineId > 0" x-cloak
+				class="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-lg">
+				<i class="fas fa-server"></i>
+				<span>Connection handled by machine. Only the remote path is needed below.</span>
+			</div>
+		} else {
+			<div x-show="destMachineId > 0" x-cloak
+				class="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-lg">
+				<i class="fas fa-server"></i>
+				<span>Connection handled by machine. Only the remote path is needed below.</span>
+			</div>
+		}
 	</div>
 }
 
@@ -707,7 +720,9 @@ templ ConfigForm(ctx context.Context, data ConfigFormData) {
 							@machinePicker("source", data.Machines, data.Config.SourceMachineID)
 
 							<!-- Source selection -->
-							@common.SourceSelection()
+							<div x-show="sourceMachineId === 0">
+								@common.SourceSelection()
+							</div>
 							
               <div class="mt-4">
                 <button type="button"
@@ -796,7 +811,9 @@ templ ConfigForm(ctx context.Context, data ConfigFormData) {
 							@machinePicker("dest", data.Machines, data.Config.DestMachineID)
 
 							<!-- Destination selection -->
-							@common.DestinationSelection()
+							<div x-show="destMachineId === 0">
+								@common.DestinationSelection()
+							</div>
 							
               <div class="mt-4">
                 <button type="button"

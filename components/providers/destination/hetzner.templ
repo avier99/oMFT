@@ -2,6 +2,7 @@ package destination
 
 templ HetznerDestinationForm() {
 	<div class="space-y-6 mt-4">
+		<div x-show="destMachineId === 0" class="space-y-6">
 		<div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300" role="alert">
 			<div class="flex items-center">
 				<i class="fas fa-info-circle mr-2"></i>
@@ -99,6 +100,7 @@ templ HetznerDestinationForm() {
 				Path to your SSH private key file (must be readable by the application)
 			</p>
 		</div>
+		</div>
 		
 		<div class="mb-6">
 			<label for="destination_path" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Remote Path</label>
@@ -115,6 +117,7 @@ templ HetznerDestinationForm() {
 			</p>
 		</div>
 		
+		<div x-show="destMachineId === 0" class="space-y-6">
 		<div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 dark:text-yellow-300" role="alert">
 			<div class="flex">
 				<i class="fas fa-shield-alt mr-2 flex-shrink-0"></i>
@@ -123,6 +126,7 @@ templ HetznerDestinationForm() {
 					<p class="mt-1">For increased security, consider using SSH key authentication instead of password authentication when possible.</p>
 				</div>
 			</div>
+		</div>
 		</div>
 	</div>
 } 
